@@ -1,0 +1,294 @@
+[
+  {
+    "id": "iso-select",
+    "spec": "ISO 7816-4",
+    "name": "SELECT FILE",
+    "summary": "Select the MF, a DF, an EF, or an application by file identifier, path, or AID.",
+    "match": { "ins": "A4", "claKind": "iso" },
+    "p1": {
+      "map": {
+        "00": "MF, DF or EF by file identifier",
+        "01": "Child DF",
+        "02": "EF under current DF",
+        "03": "Parent DF of current DF",
+        "04": "By DF name (AID)",
+        "08": "Path from MF",
+        "09": "Path from current DF"
+      }
+    },
+    "p2": {
+      "map": {
+        "00": "First or only occurrence, return FCI",
+        "02": "Next occurrence, return FCI",
+        "04": "Return FCP",
+        "08": "Return FMD",
+        "0C": "No response data"
+      }
+    },
+    "data": {
+      "byP1": {
+        "00": "fid",
+        "01": "fid",
+        "02": "fid",
+        "04": "aid",
+        "08": "path",
+        "09": "path"
+      }
+    }
+  },
+  {
+    "id": "iso-read-binary",
+    "spec": "ISO 7816-4",
+    "name": "READ BINARY",
+    "summary": "Read bytes from a transparent EF. If P1 bit 8 is set, P1 encodes an SFI and P2 is the offset.",
+    "match": { "ins": "B0", "claKind": "iso" },
+    "p1": {
+      "bitfield": [
+        { "bits": "8", "name": "SFI mode", "map": { "0": "Offset in P1-P2", "1": "SFI in bits 5-1" } },
+        { "bits": "5-1", "name": "SFI", "kind": "sfi" }
+      ]
+    },
+    "p2": { "map": { "*": "Offset (or low offset when P1 bit 8 is 0)" } }
+  },
+  {
+    "id": "iso-write-binary",
+    "spec": "ISO 7816-4",
+    "name": "WRITE BINARY",
+    "match": { "ins": "D0", "claKind": "iso" },
+    "p1": {
+      "bitfield": [
+        { "bits": "8", "name": "SFI mode", "map": { "0": "Offset in P1-P2", "1": "SFI in bits 5-1" } },
+        { "bits": "5-1", "name": "SFI", "kind": "sfi" }
+      ]
+    }
+  },
+  {
+    "id": "iso-update-binary",
+    "spec": "ISO 7816-4",
+    "name": "UPDATE BINARY",
+    "match": { "ins": "D6", "claKind": "iso" },
+    "p1": {
+      "bitfield": [
+        { "bits": "8", "name": "SFI mode", "map": { "0": "Offset in P1-P2", "1": "SFI in bits 5-1" } },
+        { "bits": "5-1", "name": "SFI", "kind": "sfi" }
+      ]
+    }
+  },
+  {
+    "id": "iso-erase-binary",
+    "spec": "ISO 7816-4",
+    "name": "ERASE BINARY",
+    "match": { "ins": "0E", "claKind": "iso" }
+  },
+  {
+    "id": "iso-search-binary",
+    "spec": "ISO 7816-4",
+    "name": "SEARCH BINARY",
+    "match": { "ins": "A0", "claKind": "iso" }
+  },
+  {
+    "id": "iso-read-record",
+    "spec": "ISO 7816-4",
+    "name": "READ RECORD",
+    "summary": "Read a record from a linear or cyclic EF. P2 encodes SFI and the read mode.",
+    "match": { "ins": "B2", "claKind": "iso" },
+    "p1": { "map": { "00": "Current / first record depending on P2", "*": "Record number" } },
+    "p2": {
+      "bitfield": [
+        { "bits": "8-4", "name": "SFI (0 = current EF)", "kind": "sfi" },
+        { "bits": "3-1", "name": "Mode", "map": {
+          "000": "First occurrence",
+          "001": "Last occurrence",
+          "010": "Next occurrence",
+          "011": "Previous occurrence",
+          "100": "Record P1",
+          "101": "P1 as record number, read up to Le"
+        } }
+      ]
+    }
+  },
+  {
+    "id": "iso-write-record",
+    "spec": "ISO 7816-4",
+    "name": "WRITE RECORD",
+    "match": { "ins": "D2", "claKind": "iso" }
+  },
+  {
+    "id": "iso-update-record",
+    "spec": "ISO 7816-4",
+    "name": "UPDATE RECORD",
+    "match": { "ins": "DC", "claKind": "iso" }
+  },
+  {
+    "id": "iso-append-record",
+    "spec": "ISO 7816-4",
+    "name": "APPEND RECORD",
+    "match": { "ins": "E2", "claKind": "iso" }
+  },
+  {
+    "id": "iso-erase-record",
+    "spec": "ISO 7816-4",
+    "name": "ERASE RECORD",
+    "match": { "ins": "0C", "claKind": "iso" }
+  },
+  {
+    "id": "iso-search-record",
+    "spec": "ISO 7816-4",
+    "name": "SEARCH RECORD",
+    "match": { "ins": "A2", "claKind": "iso" }
+  },
+  {
+    "id": "iso-get-data",
+    "spec": "ISO 7816-4",
+    "name": "GET DATA",
+    "summary": "Retrieve a data object. P1-P2 is the BER-TLV tag.",
+    "match": { "ins": "CA", "claKind": "iso" },
+    "data": "tag"
+  },
+  {
+    "id": "iso-get-data-odd",
+    "spec": "ISO 7816-4",
+    "name": "GET DATA",
+    "summary": "Odd-INS GET DATA (often used with BER-TLV in the command data).",
+    "match": { "ins": "CB", "claKind": "iso" }
+  },
+  {
+    "id": "iso-put-data",
+    "spec": "ISO 7816-4",
+    "name": "PUT DATA",
+    "match": { "ins": "DA", "claKind": "iso" },
+    "data": "tag"
+  },
+  {
+    "id": "iso-put-data-odd",
+    "spec": "ISO 7816-4",
+    "name": "PUT DATA",
+    "match": { "ins": "DB", "claKind": "iso" }
+  },
+  {
+    "id": "iso-verify",
+    "spec": "ISO 7816-4",
+    "name": "VERIFY",
+    "summary": "Compare verification data (PIN, biometric, key) with a stored reference.",
+    "match": { "ins": "20", "claKind": "iso" },
+    "p2": {
+      "bitfield": [
+        { "bits": "8", "name": "Qualifier", "map": { "0": "Global reference", "1": "Specific reference" } },
+        { "bits": "5-1", "name": "Reference data number" }
+      ]
+    }
+  },
+  {
+    "id": "iso-change-reference-data",
+    "spec": "ISO 7816-4",
+    "name": "CHANGE REFERENCE DATA",
+    "match": { "ins": "24", "claKind": "iso" }
+  },
+  {
+    "id": "iso-disable-verification",
+    "spec": "ISO 7816-4",
+    "name": "DISABLE VERIFICATION REQUIREMENT",
+    "match": { "ins": "26", "claKind": "iso" }
+  },
+  {
+    "id": "iso-enable-verification",
+    "spec": "ISO 7816-4",
+    "name": "ENABLE VERIFICATION REQUIREMENT",
+    "match": { "ins": "28", "claKind": "iso" }
+  },
+  {
+    "id": "iso-reset-retry",
+    "spec": "ISO 7816-4",
+    "name": "RESET RETRY COUNTER",
+    "match": { "ins": "2C", "claKind": "iso" }
+  },
+  {
+    "id": "iso-mse",
+    "spec": "ISO 7816-4",
+    "name": "MANAGE SECURITY ENVIRONMENT",
+    "summary": "Set, store, or restore security environment / control reference templates.",
+    "match": { "ins": "22", "claKind": "iso" },
+    "p1": {
+      "map": {
+        "01": "SET",
+        "02": "STORE",
+        "03": "RESTORE",
+        "41": "SET (variant)",
+        "81": "SET (variant)",
+        "C1": "SET (CRT / AT)",
+        "F2": "RESTORE",
+        "F3": "SET",
+        "F4": "STORE"
+      }
+    },
+    "p2": {
+      "map": {
+        "A4": "Authentication template (AT)",
+        "A6": "Key agreement template (KAT)",
+        "AA": "Hash template (HT)",
+        "B4": "Confidentiality template (CT)",
+        "B6": "Digital signature template (DST)",
+        "B8": "Cryptographic checksum template (CCT)",
+        "BA": "Digital signature input template"
+      }
+    }
+  },
+  {
+    "id": "iso-external-auth",
+    "spec": "ISO 7816-4",
+    "name": "EXTERNAL AUTHENTICATE",
+    "match": { "ins": "82", "claKind": "iso" }
+  },
+  {
+    "id": "iso-get-challenge",
+    "spec": "ISO 7816-4",
+    "name": "GET CHALLENGE",
+    "match": { "ins": "84", "claKind": "iso" }
+  },
+  {
+    "id": "iso-general-authenticate",
+    "spec": "ISO 7816-4",
+    "name": "GENERAL AUTHENTICATE",
+    "summary": "Generic authentication / key agreement (PACE, Chip Authentication, pairing).",
+    "match": { "ins": "86", "claKind": "iso" }
+  },
+  {
+    "id": "iso-general-authenticate-odd",
+    "spec": "ISO 7816-4",
+    "name": "GENERAL AUTHENTICATE",
+    "match": { "ins": "87", "claKind": "iso" }
+  },
+  {
+    "id": "iso-internal-auth",
+    "spec": "ISO 7816-4",
+    "name": "INTERNAL AUTHENTICATE",
+    "match": { "ins": "88", "claKind": "iso" }
+  },
+  {
+    "id": "iso-get-response",
+    "spec": "ISO 7816-4",
+    "name": "GET RESPONSE",
+    "summary": "Retrieve remaining response bytes after SW 61xx (typical T=0).",
+    "match": { "ins": "C0", "claKind": "iso" }
+  },
+  {
+    "id": "iso-envelope",
+    "spec": "ISO 7816-4",
+    "name": "ENVELOPE",
+    "match": { "ins": "C2", "claKind": "iso" }
+  },
+  {
+    "id": "iso-envelope-odd",
+    "spec": "ISO 7816-4",
+    "name": "ENVELOPE",
+    "match": { "ins": "C3", "claKind": "iso" }
+  },
+  {
+    "id": "iso-manage-channel",
+    "spec": "ISO 7816-4",
+    "name": "MANAGE CHANNEL",
+    "match": { "ins": "70", "claKind": "iso" },
+    "p1": { "map": { "00": "Open logical channel", "80": "Close logical channel" } },
+  "p2": { "map": { "00": "Assign channel number in the response", "*": "Channel number" } }
+  }
+]

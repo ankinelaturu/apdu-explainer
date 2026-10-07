@@ -1,0 +1,71 @@
+{
+  "name": "apdu-explainer",
+  "displayName": "APDU Explainer",
+  "description": "Detect and explain ISO 7816 APDUs from hex in the editor",
+  "version": "0.0.1",
+  "publisher": "anki",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "configurationDefaults": {
+      "editor.codeLensFontSize": 11
+    },
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "apduExplainer",
+          "title": "APDU Explainer",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "apduExplainer": [
+        {
+          "type": "webview",
+          "id": "apduExplainer.details",
+          "name": "APDU Explainer"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "apduExplainer.explain",
+        "title": "Explain APDU"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "apduExplainer.explain",
+          "when": "editorHasSelection",
+          "group": "navigation@100"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "APDU Explainer",
+      "properties": {
+        "apduExplainer.enableCodeLens": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a named CodeLens above each detected APDU"
+        },
+        "apduExplainer.enableDecorations": {
+          "type": "boolean",
+          "default": true,
+          "description": "Highlight detected APDU hex in the editor"
+        }
+      }
+    }
+  }
+}

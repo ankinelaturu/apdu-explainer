@@ -1,0 +1,27 @@
+[
+  {
+    "id": "u2f-register",
+    "spec": "FIDO U2F",
+    "name": "U2F_REGISTER",
+    "match": { "ins": "01", "claKind": "iso" }
+  },
+  {
+    "id": "u2f-authenticate",
+    "spec": "FIDO U2F",
+    "name": "U2F_AUTHENTICATE",
+    "match": { "ins": "02", "claKind": "iso" },
+    "p1": {
+      "map": {
+        "03": "Enforce user presence and sign",
+        "07": "Check-only",
+        "08": "Don't enforce user presence"
+      }
+    }
+  },
+  {
+    "id": "u2f-version",
+    "spec": "FIDO U2F",
+    "name": "U2F_VERSION",
+    "match": { "ins": "03", "claKind": "iso" }
+  }
+]

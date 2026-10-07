@@ -1,0 +1,42 @@
+[
+  {
+    "id": "iso8-pso",
+    "spec": "ISO 7816-8",
+    "name": "PERFORM SECURITY OPERATION",
+    "summary": "Hash, sign, verify, encipher, decipher, checksum, or verify a certificate.",
+    "match": { "ins": "2A", "claKind": "iso" },
+    "p1": {
+      "map": {
+        "00": "Operation qualified by P2 only",
+        "80": "Input is a data object / encipher",
+        "90": "Compute cryptographic checksum / hash",
+        "9E": "Compute digital signature"
+      }
+    },
+    "p2": {
+      "map": {
+        "80": "Encipher / confidentiality",
+        "86": "Encipher (padding qualifier)",
+        "8E": "Cryptographic checksum",
+        "9A": "Digital signature",
+        "9E": "Digital signature input",
+        "A2": "Verify cryptographic checksum",
+        "A8": "Hash",
+        "AE": "Verify certificate",
+        "00": "Default / see P1"
+      }
+    }
+  },
+  {
+    "id": "iso8-gakp",
+    "spec": "ISO 7816-8",
+    "name": "GENERATE ASYMMETRIC KEY PAIR",
+    "match": { "ins": "46", "claKind": "iso" }
+  },
+  {
+    "id": "iso8-gakp-odd",
+    "spec": "ISO 7816-8",
+    "name": "GENERATE ASYMMETRIC KEY PAIR",
+    "match": { "ins": "47", "claKind": "iso" }
+  }
+]

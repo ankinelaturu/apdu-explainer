@@ -1,0 +1,19 @@
+[
+  { "tag": "5FC101", "name": "Card Capability Container", "spec": "NIST PIV" },
+  { "tag": "5FC102", "name": "Card Holder Unique Identifier", "spec": "NIST PIV" },
+  { "tag": "5FC103", "name": "X.509 Certificate for PIV Authentication", "spec": "NIST PIV" },
+  { "tag": "5FC104", "name": "Card Holder Fingerprints", "spec": "NIST PIV" },
+  { "tag": "5FC105", "name": "Printed Information", "spec": "NIST PIV" },
+  { "tag": "5FC106", "name": "Card Holder Facial Image", "spec": "NIST PIV" },
+  { "tag": "5FC107", "name": "X.509 Certificate for Card Authentication", "spec": "NIST PIV" },
+  { "tag": "5FC108", "name": "X.509 Certificate for Digital Signature", "spec": "NIST PIV" },
+  { "tag": "5FC109", "name": "X.509 Certificate for Key Management", "spec": "NIST PIV" },
+  { "tag": "5FC10A", "name": "Printed Information", "spec": "NIST PIV" },
+  { "tag": "5FC10B", "name": "Retired X.509 Certificate for Key Management 1", "spec": "NIST PIV" },
+  { "tag": "5FC10C", "name": "Cardholder Iris Images", "spec": "NIST PIV" },
+  { "tag": "5FC10D", "name": "Key History Object", "spec": "NIST PIV" },
+  { "tag": "7E", "name": "Discovery Object", "spec": "NIST PIV" },
+  { "tag": "5FC10E", "name": "Biometric Information Templates", "spec": "NIST PIV" },
+  { "tag": "5FC117", "name": "Secure Messaging Certificate Signer", "spec": "NIST PIV" },
+  { "tag": "5FC119", "name": "Pairing Code Reference Data Container", "spec": "NIST PIV" }
+]

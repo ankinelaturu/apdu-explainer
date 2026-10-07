@@ -1,0 +1,21 @@
+[
+  {
+    "id": "demo-vendor-ping",
+    "spec": "DemoVendor",
+    "name": "DEMO VENDOR PING",
+    "summary": "Example custom command. Copy this pattern in catalog/custom/ to name your own APDUs.",
+    "match": { "cla": ["80"], "ins": "EE" },
+    "p1": { "map": { "00": "Echo", "01": "Version query" } },
+    "p2": { "map": { "00": "No options" } },
+    "data": {
+      "kind": "fields",
+      "fields": [
+        { "name": "Token", "length": 2 },
+        { "name": "Payload", "length": "rest" }
+      ]
+    }
+  },
+  { "fid": "4F20", "name": "EF.DEMOCFG", "spec": "DemoVendor" },
+  { "aid": "A0000009990101", "name": "DemoVendor App", "spec": "DemoVendor" },
+  { "sw": "9F81", "name": "Demo vendor busy", "spec": "DemoVendor" }
+]

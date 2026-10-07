@@ -1,0 +1,53 @@
+[
+  {
+    "id": "emv-gpo",
+    "spec": "EMV",
+    "name": "GET PROCESSING OPTIONS",
+    "summary": "Start EMV application processing. Data is a PDOL related data object (tag 83).",
+    "match": { "ins": "A8", "claKind": "emv" }
+  },
+  {
+    "id": "emv-generate-ac",
+    "spec": "EMV",
+    "name": "GENERATE AC",
+    "summary": "Ask the card for an application cryptogram (AAC, ARQC, or TC).",
+    "match": { "ins": "AE", "claKind": "emv" },
+    "p1": {
+      "bitfield": [
+        { "bits": "8-7", "name": "Cryptogram type", "map": { "00": "AAC", "01": "TC", "10": "ARQC" } },
+        { "bits": "5", "name": "CDA requested", "map": { "0": "No", "1": "Yes" } }
+      ]
+    }
+  },
+  {
+    "id": "emv-get-data",
+    "spec": "EMV",
+    "name": "GET DATA",
+    "summary": "Read ATC, last online ATC, PIN try counter, or log format.",
+    "match": { "ins": "CA", "claKind": "emv" }
+  },
+  {
+    "id": "emv-app-block",
+    "spec": "EMV",
+    "name": "APPLICATION BLOCK",
+    "match": { "ins": "1E", "claKind": "emv" }
+  },
+  {
+    "id": "emv-app-unblock",
+    "spec": "EMV",
+    "name": "APPLICATION UNBLOCK",
+    "match": { "ins": "18", "claKind": "emv" }
+  },
+  {
+    "id": "emv-card-block",
+    "spec": "EMV",
+    "name": "CARD BLOCK",
+    "match": { "ins": "16", "claKind": "emv" }
+  },
+  {
+    "id": "emv-pin-change-unblock",
+    "spec": "EMV",
+    "name": "PIN CHANGE/UNBLOCK",
+    "match": { "ins": "24", "claKind": "emv" }
+  }
+]

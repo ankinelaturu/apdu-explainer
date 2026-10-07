@@ -1,0 +1,4 @@
+[
+  { "aid": "A0000002471001", "name": "eMRTD", "spec": "ICAO 9303" },
+  { "aid": "A0000002472001", "name": "eMRTD Travel Records (LDS2)", "spec": "ICAO 9303" }
+]

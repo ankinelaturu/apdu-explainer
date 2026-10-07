@@ -1,0 +1,5 @@
+[
+  { "aid": "A000000151000000", "name": "Issuer Security Domain", "spec": "GlobalPlatform" },
+  { "aid": "A000000151", "name": "GlobalPlatform RID", "spec": "GlobalPlatform" },
+  { "aid": "A000000003000000", "name": "Visa Card Manager (legacy)", "spec": "Visa GP" }
+]

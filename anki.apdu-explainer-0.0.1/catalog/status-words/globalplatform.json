@@ -1,0 +1,5 @@
+[
+  { "sw": "9484", "name": "Algorithm not supported", "spec": "GlobalPlatform" },
+  { "sw": "9485", "name": "Invalid key check value", "spec": "GlobalPlatform" },
+  { "sw": "6581", "name": "Memory failure", "spec": "GlobalPlatform" }
+]

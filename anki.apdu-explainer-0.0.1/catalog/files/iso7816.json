@@ -1,0 +1,5 @@
+[
+  { "fid": "3F00", "name": "MF", "spec": "ISO 7816" },
+  { "fid": "2F00", "name": "EF.DIR", "spec": "ISO 7816" },
+  { "fid": "2F01", "name": "EF.ATR/INFO", "spec": "ISO 7816" }
+]

@@ -1,0 +1,17 @@
+{
+  "values": [
+    { "cla": "00", "name": "ISO, no SM, channel 0", "spec": "ISO 7816-4" },
+    { "cla": "01", "name": "ISO, no SM, channel 1", "spec": "ISO 7816-4" },
+    { "cla": "02", "name": "ISO, no SM, channel 2", "spec": "ISO 7816-4" },
+    { "cla": "03", "name": "ISO, no SM, channel 3", "spec": "ISO 7816-4" },
+    { "cla": "04", "name": "ISO, proprietary SM, channel 0", "spec": "ISO 7816-4" },
+    { "cla": "08", "name": "ISO, SM header not authenticated, channel 0", "spec": "ISO 7816-4" },
+    { "cla": "0C", "name": "ISO, SM authenticated, channel 0", "spec": "ISO 7816-4" },
+    { "cla": "10", "name": "ISO, command chaining, channel 0", "spec": "ISO 7816-4" },
+    { "cla": "80", "name": "Proprietary / GP, no SM", "spec": "GlobalPlatform" },
+    { "cla": "84", "name": "Proprietary / GP, C-MAC", "spec": "GlobalPlatform" },
+    { "cla": "8C", "name": "Proprietary / GP, C-DEC + C-MAC", "spec": "GlobalPlatform" },
+    { "cla": "8D", "name": "Proprietary / GP, C-DEC + C-MAC + R-MAC", "spec": "GlobalPlatform" },
+    { "cla": "81", "name": "Proprietary / GP, R-MAC", "spec": "GlobalPlatform" }
+  ]
+}

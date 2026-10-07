@@ -1,0 +1,21 @@
+[
+  {
+    "id": "piv-get-data",
+    "spec": "NIST PIV",
+    "name": "GET DATA",
+    "summary": "Retrieve a PIV data object. Command data names the BER-TLV tag.",
+    "match": { "ins": "CB", "claKind": "iso" }
+  },
+  {
+    "id": "piv-put-data",
+    "spec": "NIST PIV",
+    "name": "PUT DATA",
+    "match": { "ins": "DB", "claKind": "iso" }
+  },
+  {
+    "id": "piv-general-authenticate",
+    "spec": "NIST PIV",
+    "name": "GENERAL AUTHENTICATE",
+    "match": { "ins": "87", "claKind": "iso" }
+  }
+]

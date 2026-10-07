@@ -1,0 +1,16 @@
+[
+  { "tag": "4F", "name": "Application identifier", "spec": "OpenPGP Card" },
+  { "tag": "5E", "name": "Login data", "spec": "OpenPGP Card" },
+  { "tag": "5F50", "name": "URL", "spec": "OpenPGP Card" },
+  { "tag": "5F52", "name": "Historical bytes", "spec": "OpenPGP Card" },
+  { "tag": "7F74", "name": "General feature management", "spec": "OpenPGP Card" },
+  { "tag": "C0", "name": "Extended capabilities", "spec": "OpenPGP Card" },
+  { "tag": "C1", "name": "Algorithm attributes — signature", "spec": "OpenPGP Card" },
+  { "tag": "C2", "name": "Algorithm attributes — decryption", "spec": "OpenPGP Card" },
+  { "tag": "C3", "name": "Algorithm attributes — authentication", "spec": "OpenPGP Card" },
+  { "tag": "C4", "name": "PW status bytes", "spec": "OpenPGP Card" },
+  { "tag": "C5", "name": "Fingerprints", "spec": "OpenPGP Card" },
+  { "tag": "C6", "name": "CA fingerprints", "spec": "OpenPGP Card" },
+  { "tag": "7A", "name": "Security support template", "spec": "OpenPGP Card" },
+  { "tag": "6E", "name": "Application related data", "spec": "OpenPGP Card" }
+]

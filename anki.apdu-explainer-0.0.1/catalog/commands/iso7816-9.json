@@ -1,0 +1,44 @@
+[
+  {
+    "id": "iso9-create-file",
+    "spec": "ISO 7816-9",
+    "name": "CREATE FILE",
+    "match": { "ins": "E0", "claKind": "iso" }
+  },
+  {
+    "id": "iso9-delete-file",
+    "spec": "ISO 7816-9",
+    "name": "DELETE FILE",
+    "match": { "ins": "E4", "claKind": "iso" }
+  },
+  {
+    "id": "iso9-activate-file",
+    "spec": "ISO 7816-9",
+    "name": "ACTIVATE FILE",
+    "match": { "ins": "44", "claKind": "iso" }
+  },
+  {
+    "id": "iso9-deactivate-file",
+    "spec": "ISO 7816-9",
+    "name": "DEACTIVATE FILE",
+    "match": { "ins": "04", "claKind": "iso" }
+  },
+  {
+    "id": "iso9-terminate-df",
+    "spec": "ISO 7816-9",
+    "name": "TERMINATE DF",
+    "match": { "ins": "E6", "claKind": "iso" }
+  },
+  {
+    "id": "iso9-terminate-ef",
+    "spec": "ISO 7816-9",
+    "name": "TERMINATE EF",
+    "match": { "ins": "E8", "claKind": "iso" }
+  },
+  {
+    "id": "iso9-terminate-card",
+    "spec": "ISO 7816-9",
+    "name": "TERMINATE CARD USAGE",
+    "match": { "ins": "FE", "claKind": "iso" }
+  }
+]

@@ -1,0 +1,6 @@
+[
+  { "sw": "91xx", "name": "Normal ending, proactive command pending (xx = length)", "spec": "ETSI TS 102 223" },
+  { "sw": "9300", "name": "SIM Application Toolkit busy", "spec": "ETSI TS 102 223" },
+  { "sw": "9Exx", "name": "SIM data download error", "spec": "3GPP TS 51.011" },
+  { "sw": "9Fxx", "name": "Length xx of response data (GSM SELECT)", "spec": "3GPP TS 51.011" }
+]

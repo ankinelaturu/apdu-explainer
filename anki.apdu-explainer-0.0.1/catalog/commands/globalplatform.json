@@ -1,0 +1,103 @@
+[
+  {
+    "id": "gp-delete",
+    "spec": "GlobalPlatform",
+    "name": "DELETE",
+    "summary": "Delete an executable load file, application, or related card content.",
+    "match": { "ins": "E4", "claKind": "gp" },
+    "p2": { "map": { "00": "Delete object", "80": "Delete object and related objects" } }
+  },
+  {
+    "id": "gp-install",
+    "spec": "GlobalPlatform",
+    "name": "INSTALL",
+    "summary": "Load, install, make selectable, extradite, personalize, or update registry.",
+    "match": { "ins": "E6", "claKind": "gp" },
+    "p1": {
+      "map": {
+        "02": "For load",
+        "04": "For install",
+        "08": "For make selectable",
+        "0C": "For install and make selectable",
+        "10": "For extradition",
+        "20": "For registry update",
+        "40": "For personalization"
+      }
+    }
+  },
+  {
+    "id": "gp-load",
+    "spec": "GlobalPlatform",
+    "name": "LOAD",
+    "match": { "ins": "E8", "claKind": "gp" },
+    "p1": {
+      "bitfield": [
+        { "bits": "8", "name": "Last block", "map": { "0": "More blocks follow", "1": "Last block" } }
+      ]
+    }
+  },
+  {
+    "id": "gp-store-data",
+    "spec": "GlobalPlatform",
+    "name": "STORE DATA",
+    "match": { "ins": "E2", "claKind": "gp" }
+  },
+  {
+    "id": "gp-put-key",
+    "spec": "GlobalPlatform",
+    "name": "PUT KEY",
+    "match": { "ins": "D8", "claKind": "gp" }
+  },
+  {
+    "id": "gp-get-status",
+    "spec": "GlobalPlatform",
+    "name": "GET STATUS",
+    "match": { "ins": "F2", "claKind": "gp" },
+    "p1": {
+      "map": {
+        "80": "Issuer Security Domain",
+        "40": "Applications / SSD",
+        "20": "Executable load files",
+        "10": "Executable load files and modules"
+      }
+    },
+    "p2": { "map": { "00": "Get first / all", "01": "Get next" } }
+  },
+  {
+    "id": "gp-set-status",
+    "spec": "GlobalPlatform",
+    "name": "SET STATUS",
+    "match": { "ins": "F8", "claKind": "gp" }
+  },
+  {
+    "id": "gp-get-data",
+    "spec": "GlobalPlatform",
+    "name": "GET DATA",
+    "match": { "ins": "CA", "claKind": "gp" }
+  },
+  {
+    "id": "gp-init-update",
+    "spec": "GlobalPlatform",
+    "name": "INITIALIZE UPDATE",
+    "summary": "Start a secure channel (SCP02/SCP03). P1 is the key version.",
+    "match": { "ins": "50", "claKind": "gp" },
+    "p1": { "map": { "*": "Key version number" } },
+    "p2": { "map": { "00": "Default key identifier" } }
+  },
+  {
+    "id": "gp-ext-auth",
+    "spec": "GlobalPlatform",
+    "name": "EXTERNAL AUTHENTICATE",
+    "summary": "Complete the GP secure channel. P1 is the requested security level.",
+    "match": { "ins": "82", "claKind": "gp" },
+    "p1": {
+      "map": {
+        "00": "No secure messaging",
+        "01": "C-MAC",
+        "03": "C-DECRYPTION and C-MAC",
+        "15": "C-MAC and R-MAC",
+        "33": "C-DECRYPTION, C-MAC, R-MAC"
+      }
+    }
+  }
+]

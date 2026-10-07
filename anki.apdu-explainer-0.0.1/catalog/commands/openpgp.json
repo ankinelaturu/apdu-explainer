@@ -1,0 +1,33 @@
+[
+  {
+    "id": "openpgp-verify",
+    "spec": "OpenPGP Card",
+    "name": "VERIFY",
+    "match": { "ins": "20", "claKind": "iso" },
+    "p2": {
+      "map": {
+        "81": "PW1 (81) — signing",
+        "82": "PW1 (82) — other commands",
+        "83": "PW3 (admin)"
+      }
+    }
+  },
+  {
+    "id": "openpgp-get-data",
+    "spec": "OpenPGP Card",
+    "name": "GET DATA",
+    "match": { "ins": "CA", "claKind": "iso" }
+  },
+  {
+    "id": "openpgp-put-data",
+    "spec": "OpenPGP Card",
+    "name": "PUT DATA",
+    "match": { "ins": "DA", "claKind": "iso" }
+  },
+  {
+    "id": "openpgp-gakp",
+    "spec": "OpenPGP Card",
+    "name": "GENERATE ASYMMETRIC KEY PAIR",
+    "match": { "ins": "47", "claKind": "iso" }
+  }
+]

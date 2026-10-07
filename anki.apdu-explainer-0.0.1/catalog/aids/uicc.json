@@ -1,0 +1,6 @@
+[
+  { "aid": "A000000087", "name": "3GPP / ETSI UICC RID", "spec": "ETSI TS 101 220" },
+  { "aid": "A0000000871002", "name": "USIM", "spec": "3GPP TS 31.102" },
+  { "aid": "A0000000871004", "name": "ISIM", "spec": "3GPP TS 31.103" },
+  { "aid": "A0000000090001FF", "name": "ETSI toolkit / SAT", "spec": "ETSI" }
+]

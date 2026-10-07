@@ -1,0 +1,12 @@
+[
+  { "sw": "6283", "name": "Selected file invalidated", "spec": "EMV" },
+  { "sw": "6300", "name": "Authentication failed", "spec": "EMV" },
+  { "sw": "63Cx", "name": "PIN try counter = x", "spec": "EMV" },
+  { "sw": "6983", "name": "Authentication method blocked", "spec": "EMV" },
+  { "sw": "6984", "name": "Referenced data invalidated", "spec": "EMV" },
+  { "sw": "6985", "name": "Conditions of use not satisfied", "spec": "EMV" },
+  { "sw": "6A81", "name": "Function not supported", "spec": "EMV" },
+  { "sw": "6A82", "name": "File not found", "spec": "EMV" },
+  { "sw": "6A83", "name": "Record not found", "spec": "EMV" },
+  { "sw": "6A88", "name": "Referenced data not found", "spec": "EMV" }
+]

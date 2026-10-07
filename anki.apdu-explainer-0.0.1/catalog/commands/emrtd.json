@@ -1,0 +1,20 @@
+[
+  {
+    "id": "emrtd-select",
+    "spec": "eMRTD",
+    "name": "SELECT FILE",
+    "summary": "Select the eMRTD application (AID A0000002471001) or an LDS elementary file.",
+    "match": { "ins": "A4", "claKind": "iso" },
+    "p1": {
+      "map": {
+        "00": "By file identifier",
+        "02": "EF under current DF",
+        "04": "By AID (eMRTD application)"
+      }
+    },
+    "p2": { "map": { "0C": "No FCI (typical ePassport)", "00": "Return FCI" } },
+    "data": {
+      "byP1": { "00": "fid", "02": "fid", "04": "aid" }
+    }
+  }
+]

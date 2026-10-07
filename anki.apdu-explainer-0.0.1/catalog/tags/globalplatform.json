@@ -1,0 +1,13 @@
+[
+  { "tag": "42", "name": "IIN", "spec": "GlobalPlatform" },
+  { "tag": "45", "name": "CIN", "spec": "GlobalPlatform" },
+  { "tag": "66", "name": "Card data", "spec": "GlobalPlatform" },
+  { "tag": "67", "name": "Card capability information", "spec": "GlobalPlatform" },
+  { "tag": "E0", "name": "Key information template", "spec": "GlobalPlatform" },
+  { "tag": "C1", "name": "Sequence counter of the default key version", "spec": "GlobalPlatform" },
+  { "tag": "CF", "name": "Key derivation data", "spec": "GlobalPlatform" },
+  { "tag": "D3", "name": "Current security level", "spec": "GlobalPlatform" },
+  { "tag": "2F00", "name": "List of applications", "spec": "GlobalPlatform" },
+  { "tag": "9F7F", "name": "Card production life cycle (CPLC)", "spec": "GlobalPlatform" },
+  { "tag": "00E0", "name": "Key information template", "spec": "GlobalPlatform" }
+]

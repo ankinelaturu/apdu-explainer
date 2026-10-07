@@ -1,0 +1,64 @@
+[
+  {
+    "id": "uicc-status",
+    "spec": "ETSI TS 102 221",
+    "name": "STATUS",
+    "summary": "Return information about the currently selected file.",
+    "match": { "ins": "F2", "claKind": "iso" }
+  },
+  {
+    "id": "uicc-authenticate",
+    "spec": "ETSI TS 102 221",
+    "name": "AUTHENTICATE",
+    "summary": "Run the UICC authentication algorithm (USIM / ISIM / GSM context in P2).",
+    "match": { "ins": "88", "claKind": "iso" },
+    "p2": {
+      "bitfield": [
+        { "bits": "8", "name": "Scope", "map": { "0": "MF", "1": "DF/ADF specific" } },
+        { "bits": "5-1", "name": "Reference data number" }
+      ]
+    }
+  },
+  {
+    "id": "uicc-authenticate-odd",
+    "spec": "ETSI TS 102 221",
+    "name": "AUTHENTICATE",
+    "match": { "ins": "89", "claKind": "iso" }
+  },
+  {
+    "id": "uicc-increase",
+    "spec": "ETSI TS 102 221",
+    "name": "INCREASE",
+    "match": { "ins": "32", "claKind": "iso" }
+  },
+  {
+    "id": "uicc-retrieve-data",
+    "spec": "ETSI TS 102 221",
+    "name": "RETRIEVE DATA",
+    "match": { "ins": "CB", "claKind": "iso" }
+  },
+  {
+    "id": "uicc-set-data",
+    "spec": "ETSI TS 102 221",
+    "name": "SET DATA",
+    "match": { "ins": "DB", "claKind": "iso" }
+  },
+  {
+    "id": "cat-terminal-profile",
+    "spec": "ETSI TS 102 223",
+    "name": "TERMINAL PROFILE",
+    "match": { "ins": "10", "cla": ["80"] }
+  },
+  {
+    "id": "cat-fetch",
+    "spec": "ETSI TS 102 223",
+    "name": "FETCH",
+    "match": { "ins": "12", "cla": ["80"] }
+  },
+  {
+    "id": "cat-terminal-response",
+    "spec": "ETSI TS 102 223",
+    "name": "TERMINAL RESPONSE",
+    "match": { "ins": "14", "cla": ["80"] }
+  }
+]

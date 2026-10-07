@@ -1,0 +1,4 @@
+[
+  { "aid": "A000000308", "name": "PIV RID", "spec": "NIST SP 800-73" },
+  { "aid": "A000000308000010000100", "name": "PIV Card Application", "spec": "NIST SP 800-73" }
+]

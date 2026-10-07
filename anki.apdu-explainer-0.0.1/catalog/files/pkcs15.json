@@ -1,0 +1,11 @@
+[
+  { "fid": "2F00", "name": "EF.OD", "spec": "PKCS#15" },
+  { "fid": "5031", "name": "EF.OD", "spec": "PKCS#15" },
+  { "fid": "5032", "name": "EF.TokenInfo", "spec": "PKCS#15" },
+  { "fid": "5033", "name": "EF.UnusedSpace", "spec": "PKCS#15" },
+  { "fid": "5200", "name": "EF.PrKD", "spec": "PKCS#15" },
+  { "fid": "5201", "name": "EF.PuKD", "spec": "PKCS#15" },
+  { "fid": "5202", "name": "EF.SKD", "spec": "PKCS#15" },
+  { "fid": "5203", "name": "EF.CD", "spec": "PKCS#15" },
+  { "fid": "5204", "name": "EF.AOD", "spec": "PKCS#15" }
+]
