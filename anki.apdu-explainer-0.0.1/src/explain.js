@@ -69,13 +69,22 @@ function decodeBitfield(byte, bitfield) {
   });
 }
 
+function mapLookupResult(map, value) {
+  if (!map) return { meaning: null, wildcard: false };
+  const hex = toHexByte(value);
+  if (Object.prototype.hasOwnProperty.call(map, hex)) return { meaning: map[hex], wildcard: false };
+  if (Object.prototype.hasOwnProperty.call(map, hex.toLowerCase())) return { meaning: map[hex.toLowerCase()], wildcard: false };
+  if (Object.prototype.hasOwnProperty.call(map, "*")) return { meaning: map["*"], wildcard: true };
+  return { meaning: null, wildcard: false };
+}
+
 function decodeParam(def, value) {
-  if (!def) return { meaning: null, bits: [] };
-  if (typeof def === "string") return { meaning: def, bits: [] };
+  if (!def) return { meaning: null, bits: [], wildcard: false };
+  if (typeof def === "string") return { meaning: def, bits: [], wildcard: false };
   const map = def.map || (looksLikeMap(def) ? def : null);
-  const meaning = map ? mapLookup(map, value) : null;
+  const looked = mapLookupResult(map, value);
   const bits = def.bitfield ? decodeBitfield(value, def.bitfield) : [];
-  return { meaning, bits };
+  return { meaning: looked.meaning, bits, wildcard: looked.wildcard };
 }
 
 function looksLikeMap(obj) {
@@ -236,11 +245,53 @@ function sfiFromReadRecord(p2) {
   return sfi ? sfi : null;
 }
 
+function uniquePillNames(pills) {
+  const names = [];
+  const seen = new Set();
+  for (const p of pills || []) {
+    if (!p || !p.name || seen.has(p.name)) continue;
+    seen.add(p.name);
+    names.push(p.name);
+  }
+  return names;
+}
+
+function pickDecodeEntry(matches) {
+  if (!matches.length) return null;
+  const top = matches[0].score;
+  const tied = matches.filter((m) => m.score === top);
+  const custom = tied.find((m) => m.entry._custom);
+  if (custom) return custom.entry;
+  const iso = tied.find((m) => /^ISO 7816/i.test(m.entry.spec || ""));
+  return (iso || tied[0]).entry;
+}
+
+function commandSummary(title, fields, fallback) {
+  const p1 = fields.find((f) => f.id === "p1");
+  const p2 = fields.find((f) => f.id === "p2");
+  const data = fields.find((f) => f.id === "data");
+  const named = uniquePillNames([
+    ...((data && data.pills) || []),
+    ...((p1 && p1.pills) || []),
+    ...((p2 && p2.pills) || []),
+  ]);
+  const p1Exact = p1 && p1.meaning && !p1.meaningWildcard ? String(p1.meaning).trim() : "";
+  const p1Any = p1 && p1.meaning ? String(p1.meaning).trim() : "";
+  const p2Exact = p2 && p2.meaning && !p2.meaningWildcard ? String(p2.meaning).trim() : "";
+  const details = [];
+  if (p1Exact && p1Exact !== title) details.push(p1Exact);
+  if (named.length) details.push(named.join(", "));
+  if (!details.length && p1Any && p1Any !== title) details.push(p1Any);
+  if (!details.length && p2Exact && p2Exact !== title) details.push(p2Exact);
+  if (details.length) return `${title}: ${details.join(" — ")}`;
+  return fallback || title;
+}
+
 function explainCommand(bytes, catalog) {
   const parsed = parseCommand(bytes) || {};
   if (!parsed.ins && parsed.ins !== 0) return null;
   const matches = findCommands(catalog, parsed.cla, parsed.ins, parsed.p1, parsed.p2);
-  const best = matches[0] ? matches[0].entry : null;
+  const best = pickDecodeEntry(matches);
   const title = best && best.name ? best.name : "CUSTOM APDU";
   const specPills = [];
   const seen = new Set();
@@ -300,6 +351,7 @@ function explainCommand(bytes, catalog) {
       name: "P1",
       hex: toHexByte(parsed.p1),
       meaning: p1Info.meaning,
+      meaningWildcard: !!p1Info.wildcard,
       bits: p1Info.bits,
       pills: p1Pills,
     },
@@ -308,6 +360,7 @@ function explainCommand(bytes, catalog) {
       name: "P2",
       hex: toHexByte(parsed.p2),
       meaning: p2Info.meaning,
+      meaningWildcard: !!p2Info.wildcard,
       bits: p2Info.bits,
       pills: p2Pills,
     },
@@ -349,7 +402,7 @@ function explainCommand(bytes, catalog) {
 
   return {
     title,
-    summary: best && best.summary ? best.summary : null,
+    summary: commandSummary(title, fields, best && best.summary),
     specPills,
     known: !!best,
     case: parsed.case,

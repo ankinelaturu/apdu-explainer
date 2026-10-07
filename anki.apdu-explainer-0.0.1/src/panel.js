@@ -160,7 +160,7 @@ function compactMarkdown(explanation) {
   const md = new vscode.MarkdownString();
   md.isTrusted = true;
   md.supportHtml = false;
-  const specs = (explanation.specPills || []).map((p) => `${p.name} (${p.spec})`).join(" · ");
+  const specs = [...new Set((explanation.specPills || []).map((p) => p.spec || p.name).filter(Boolean))].join(" · ");
   md.appendMarkdown(`**${explanation.title}**\n\n`);
   if (specs) md.appendMarkdown(`${specs}\n\n`);
   if (explanation.summary) md.appendMarkdown(`${explanation.summary}\n\n`);

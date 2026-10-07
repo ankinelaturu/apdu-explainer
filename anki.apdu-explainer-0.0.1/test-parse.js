@@ -36,15 +36,20 @@ const selectApp = explain(hex("00 A4 04 0C 07 A0 00 00 02 47 10 01"), catalog);
 eq(selectApp.title, "SELECT FILE", "select app title");
 const aidPills = (selectApp.fields.find((f) => f.id === "data") || {}).pills || [];
 eq(aidPills.some((p) => p.name === "eMRTD"), true, "eMRTD AID pill");
+eq(selectApp.summary.includes("eMRTD"), true, "select app summary names AID");
+eq(/LDS elementary file/.test(selectApp.summary), false, "select app summary is not the combined catalog blurb");
 
 const selectEf = explain(hex("00 A4 02 0C 02 01 1E"), catalog);
 const fidPills = (selectEf.fields.find((f) => f.id === "data") || {}).pills || [];
 eq(fidPills.some((p) => p.name === "EF.COM"), true, "EF.COM pill");
+eq(selectEf.summary.includes("EF.COM"), true, "select EF summary names the file");
+eq(selectEf.summary.includes("A0000002471001"), false, "select EF summary is not applet SELECT");
 
 const readSfi = explain(hex("00 B0 9E 00 00"), catalog);
 eq(readSfi.title, "READ BINARY", "read binary title");
 const p1Pills = (readSfi.fields.find((f) => f.id === "p1") || {}).pills || [];
 eq(p1Pills.some((p) => p.name === "EF.COM"), true, "SFI EF.COM");
+eq(readSfi.summary.includes("EF.COM"), true, "read binary summary names the file");
 
 const sw = explain(hex("90 00"), catalog);
 eq(lensTitle(sw).replace(/\s/g, ""), "SW9000", "sw lens");
