@@ -1,6 +1,10 @@
 # APDU Explainer
 
-Local VS Code / Cursor extension that detects hex APDUs in the editor and explains them (CodeLens, hover, highlight, and a bottom panel). No marketplace install and no VSIX — copy the extension folder into your editor’s extensions directory.
+Local VS Code / Cursor extension that detects hex APDUs in the editor and explains them. No marketplace install, no VSIX, no network — copy the extension folder into your editor’s extensions directory.
+
+![APDU Explainer: CodeLens, hover, and the explainer panel](apdu-explainer.png)
+
+CodeLens names the command (or the status-word meaning). Hover shows a compact decode. The bottom **APDU Explainer** panel has this APDU split into fields, then a **Reference** page for the command.
 
 ## Find the extensions folder
 
@@ -52,7 +56,29 @@ Repeat the copy/symlink for each editor you use (for example both VS Code and Cu
 
 ## Use
 
-Open a file with spaced hex, `0xAA 0xBB`, or `0xAA, 0xBB` (see `samples/`). Detected APDUs get a highlight, a CodeLens (`Command APDU:` / `Response APDU:`), and a hover. Click the CodeLens, or select hex and use **Explain APDU** from the editor context menu, to open the bottom **APDU Explainer** panel.
+Open a source or log file that contains hex. Try `samples/apdu-samples.txt` or `samples/apdu-samples.c`.
+
+Three hex layouts are detected (spaces required; packed `00A4040C` is ignored):
+
+- `00 A4 04 0C`
+- `0x00 0xA4 0x04 0x0C`
+- `0x00, 0xA4, 0x04, 0x0C`
+
+A command may wrap across consecutive lines of the same layout (typically 16 bytes per row). Truncated or uneven dumps are left unmarked.
+
+On a complete APDU you get:
+
+1. A light highlight on the hex.
+2. A CodeLens: `Command APDU: SELECT FILE` or `Response APDU: File not found` (status-word meaning, not `SW 6A82`).
+3. A hover with spec pills and a compact CLA / INS / P1 / P2 / DATA table.
+
+Open the bottom panel:
+
+- Click the CodeLens, or
+- Hover and follow **Open full explanation**, or
+- Select the hex and run **Explain APDU** from the editor context menu (Command Palette has the same command).
+
+The panel heading and pills are this APDU. The boxed table is the split (CLA, INS, P1, P2, DATA, …). **Reference** under the table is the teaching page for that command or status word (`catalog/about/*.md`).
 
 CodeLens follows the editor settings:
 
@@ -61,4 +87,8 @@ CodeLens follows the editor settings:
 
 Hex highlighting: `apduExplainer.enableDecorations`.
 
-Custom entries go in `anki.apdu-explainer-0.0.1/catalog/custom/` and overlay the shipped catalogs. Drop a `.json` file there and reload (or save; the folder is watched).
+## Catalogs
+
+Shipped decode data lives under `anki.apdu-explainer-0.0.1/catalog/` (commands, files, AIDs, tags, status words). Teaching markdown is `catalog/about/<command-id>.md` (status words: `sw-6a82.md`).
+
+Custom overlay: add JSON in `catalog/custom/` (see `catalog/custom/demo.json`) and optional pages in `catalog/custom/about/`. Custom ids win over the shipped catalogs. Reload the window after adding files.
