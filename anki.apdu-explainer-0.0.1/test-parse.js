@@ -4,6 +4,8 @@ const path = require("path");
 const { parseHex, detectHexRuns } = require("./src/parseHex");
 const { loadCatalog } = require("./src/catalog");
 const { explain, lensTitle } = require("./src/explain");
+const { joinedRunsFromLines } = require("./src/joinHex");
+const { parseCommand } = require("./src/parseApdu");
 
 const catalog = loadCatalog(path.join(__dirname, "catalog"));
 let failed = 0;
@@ -69,6 +71,34 @@ eq(oddSpecs.length >= 3, true, "odd INS CB matches 3+ specs");
 eq(oddSpecs.includes("ISO 7816-4"), true, "odd INS CB includes ISO 7816-4");
 eq(oddSpecs.includes("NIST PIV"), true, "odd INS CB includes NIST PIV");
 eq(oddSpecs.includes("ETSI TS 102 221"), true, "odd INS CB includes UICC");
+
+const writePlain = [
+  "00 D0 00 00 20 01 02 03 04 05 06 07 08 09 0A 0B",
+  "0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B",
+  "1C 1D 1E 1F 20",
+];
+const joinedPlain = joinedRunsFromLines(writePlain);
+eq(joinedPlain.length, 1, "plain wrap is one run");
+eq(joinedPlain[0].bytes.length, 37, "plain wrap is 37 bytes");
+eq(!!parseCommand(joinedPlain[0].bytes), true, "plain wrap parses as command");
+eq(explain(joinedPlain[0].bytes, catalog).title, "WRITE BINARY", "plain wrap is WRITE BINARY");
+
+const write0x = [
+  "0x00 0xD0 0x00 0x00 0x20 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 0x09 0x0A 0x0B",
+  "0x0C 0x0D 0x0E 0x0F 0x10 0x11 0x12 0x13 0x14 0x15 0x16 0x17 0x18 0x19 0x1A 0x1B",
+  "0x1C 0x1D 0x1E 0x1F 0x20",
+];
+eq(joinedRunsFromLines(write0x)[0].bytes.length, 37, "0x-space wrap is 37 bytes");
+
+const writeComma = [
+  "0x00, 0xD0, 0x00, 0x00, 0x20, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B,",
+  "0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B,",
+  "0x1C, 0x1D, 0x1E, 0x1F, 0x20",
+];
+eq(joinedRunsFromLines(writeComma)[0].bytes.length, 37, "0x-comma wrap is 37 bytes");
+
+const twoSelects = ["00 A4 04 0C 07 A0 00 00 02 47 10 01", "00 A4 02 0C 02 01 1E"];
+eq(joinedRunsFromLines(twoSelects).length, 2, "two complete APDUs stay separate");
 
 if (failed) {
   console.error(failed + " failed");

@@ -1,9 +1,10 @@
 "use strict";
 
 const vscode = require("vscode");
-const { detectHexRuns, parseHex, tokenSpans } = require("./parseHex");
+const { parseHex } = require("./parseHex");
 const { classify, shouldAutoDetect, parseCommand } = require("./parseApdu");
 const { explain, lensTitle } = require("./explain");
+const { collectLineRuns, joinLineRuns, byteMap } = require("./joinHex");
 
 function splitIntoApdus(bytes, swIndex) {
   if (!bytes || bytes.length < 2) return [];
@@ -44,33 +45,32 @@ function getSpans(document, catalog) {
     return cached.spans;
   }
   const spans = [];
-  const lineCount = document.lineCount;
   if (document.getText().length > 2_000_000) {
     cache.set(document, { version: document.version, catalog, spans: [] });
     return [];
   }
-  for (let line = 0; line < lineCount; line++) {
-    const text = document.lineAt(line).text;
-    const runs = detectHexRuns(text);
-    for (const run of runs) {
-      const tokens = tokenSpans(run.text);
-      const parts = splitIntoApdus(run.bytes, catalog.swIndex);
-      const chunks = parts.length ? parts : [{ bytes: run.bytes, from: 0, to: run.bytes.length }];
-      for (const part of chunks) {
-        const parsed = classify(part.bytes, catalog.swIndex);
-        if (!shouldAutoDetect(part.bytes, parsed)) continue;
-        const startTok = tokens[part.from];
-        const endTok = tokens[part.to - 1];
-        if (!startTok || !endTok) continue;
-        const explanation = explain(part.bytes, catalog);
-        spans.push({
-          range: new vscode.Range(line, run.start + startTok.start, line, run.start + endTok.end),
-          bytes: part.bytes,
-          text: run.text.slice(startTok.start, endTok.end),
-          explanation,
-          title: lensTitle(explanation),
-        });
-      }
+  const lines = [];
+  for (let line = 0; line < document.lineCount; line++) {
+    lines.push(document.lineAt(line).text);
+  }
+  const groups = joinLineRuns(collectLineRuns(lines), { lines });
+  for (const group of groups) {
+    const map = byteMap(group.parts);
+    const parts = splitIntoApdus(group.bytes, catalog.swIndex);
+    const chunks = parts.length ? parts : [{ bytes: group.bytes, from: 0, to: group.bytes.length }];
+    for (const part of chunks) {
+      const parsed = classify(part.bytes, catalog.swIndex);
+      if (!shouldAutoDetect(part.bytes, parsed)) continue;
+      const startTok = map[part.from];
+      const endTok = map[part.to - 1];
+      if (!startTok || !endTok) continue;
+      const explanation = explain(part.bytes, catalog);
+      spans.push({
+        range: new vscode.Range(startTok.line, startTok.start, endTok.line, endTok.end),
+        bytes: part.bytes,
+        explanation,
+        title: lensTitle(explanation),
+      });
     }
   }
   cache.set(document, { version: document.version, catalog, spans });

@@ -197,6 +197,28 @@ function shouldAutoDetect(bytes, parsed) {
   return false;
 }
 
+function neededCommandLengths(bytes) {
+  if (!bytes || bytes.length < 4) return [];
+  if (bytes.length === 4) return [4];
+  const b4 = bytes[4];
+  if (b4 !== 0) return [5 + b4, 6 + b4];
+  if (bytes.length < 7) return [7];
+  const lc = (bytes[5] << 8) | bytes[6];
+  if (lc === 0) return [7];
+  return [7 + lc, 9 + lc];
+}
+
+function isIncompleteCommand(bytes) {
+  if (!bytes || bytes.length < 4) return false;
+  if (parseCommand(bytes)) return false;
+  return neededCommandLengths(bytes).some((n) => n > bytes.length);
+}
+
+function maxNeededCommandLength(bytes) {
+  const needed = neededCommandLengths(bytes);
+  return needed.length ? Math.max.apply(null, needed) : 0;
+}
+
 module.exports = {
   parseCommand,
   parseResponse,
@@ -204,4 +226,7 @@ module.exports = {
   shouldAutoDetect,
   isLikelyStatusWord,
   toSwHex,
+  neededCommandLengths,
+  isIncompleteCommand,
+  maxNeededCommandLength,
 };
