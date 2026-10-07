@@ -6,6 +6,7 @@ const { loadCatalog } = require("./src/catalog");
 const { explain, lensTitle } = require("./src/explain");
 const { joinedRunsFromLines, displayableGroupsFromLines, wrapRowsWellFormed } = require("./src/joinHex");
 const { parseCommand, isTruncatedCommand, splitIntoApdus } = require("./src/parseApdu");
+const { bodyFor } = require("./src/panel");
 
 const catalog = loadCatalog(path.join(__dirname, "catalog"));
 let failed = 0;
@@ -127,6 +128,25 @@ const truncated = joinedRunsFromLines([
 eq(isTruncatedCommand(truncated), true, "truncated WRITE BINARY is flagged");
 eq(splitIntoApdus(truncated, catalog.swIndex).length, 0, "truncated WRITE BINARY is not split");
 eq(wrapRowsWellFormed(joinedPlain[0].parts), true, "16/16/5 wrap shape is valid");
+
+const selectHtml = bodyFor(selectApp);
+eq(/class="bytes"/.test(selectHtml), false, "panel does not repeat APDU bytes");
+eq(/<table class="apdu">/.test(selectHtml), true, "panel uses a field table");
+eq(/<h1>SELECT FILE<\/h1>/.test(selectHtml), true, "panel heading is command name");
+eq(/class="data-kind"[\s\S]*AID/.test(selectHtml), true, "DATA first row is the kind");
+eq(/class="data-hex"[\s\S]*A0 00 00 02 47 10 01/.test(selectHtml), true, "DATA hex is on following rows");
+
+const writeHtml = bodyFor(explain(joinedPlain[0].bytes, catalog));
+eq(
+  /01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10/.test(writeHtml),
+  true,
+  "DATA wraps 16 bytes on the first hex row"
+);
+eq(
+  /11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F 20/.test(writeHtml),
+  true,
+  "DATA continues on the next hex row"
+);
 
 if (failed) {
   console.error(failed + " failed");

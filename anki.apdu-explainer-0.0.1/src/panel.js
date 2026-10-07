@@ -1,6 +1,8 @@
 "use strict";
 
-const vscode = require("vscode");
+function vscodeApi() {
+  return require("vscode");
+}
 
 function esc(value) {
   return String(value == null ? "" : value)
@@ -20,6 +22,103 @@ function pillHtml(pills) {
         )}</span></span>`
     )
     .join("")}</div>`;
+}
+
+const HEX_PER_LINE = 16;
+
+function hexRows(hex, perLine) {
+  const bytes = String(hex || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  const lines = [];
+  for (let i = 0; i < bytes.length; i += perLine) {
+    lines.push(bytes.slice(i, i + perLine).join(" "));
+  }
+  return lines;
+}
+
+function fieldNoteHtml(field) {
+  const pills = pillHtml(field.pills);
+  const meaningText = field.meaning ? String(field.meaning) : "";
+  const pillTextValue = pillText(field.pills);
+  let meaning = "";
+  if (meaningText) {
+    const skip =
+      pillTextValue &&
+      (pillTextValue === meaningText ||
+        pillTextValue.startsWith(`${meaningText} `) ||
+        pillTextValue.startsWith(`${meaningText} (`));
+    if (!skip) meaning = `<span class="meaning">${esc(meaningText)}</span>`;
+  }
+  const bits = bitsHtml(field.bits);
+  if (!meaning && !pills && !bits) return "";
+  return `${meaning}${pills}${bits}`;
+}
+
+function fieldNameCell(field) {
+  return `<th scope="row"><span class="tag tag-${esc(field.id)}">${esc(field.name)}</span></th>`;
+}
+
+function tableRow(nameCell, value, note, extraClass, valueClass) {
+  const cls = extraClass ? ` class="${extraClass}"` : "";
+  const vcls = valueClass || "val mono";
+  return `<tr${cls}>${nameCell}<td class="${vcls}">${esc(value || "")}</td><td class="note">${
+    note || ""
+  }</td></tr>`;
+}
+
+function dataKindLabel(meaning) {
+  const s = String(meaning || "");
+  if (/^(aid|fid|tag|path|raw|fields)$/i.test(s)) return s.toUpperCase();
+  return s;
+}
+
+function dataFieldRows(field) {
+  const rows = [];
+  rows.push(
+    tableRow(
+      fieldNameCell(field),
+      dataKindLabel(field.meaning),
+      pillHtml(field.pills),
+      "data-kind",
+      "val"
+    )
+  );
+  for (const line of hexRows(field.hex, HEX_PER_LINE)) {
+    rows.push(tableRow("<th></th>", line, "", "data-hex"));
+  }
+  for (const part of field.parts || []) {
+    const lines = hexRows(part.hex, HEX_PER_LINE);
+    rows.push(
+      tableRow(`<th class="part">${esc(part.name)}</th>`, lines[0] || "", pillHtml(part.pills), "data-part")
+    );
+    for (const line of lines.slice(1)) {
+      rows.push(tableRow("<th></th>", line, "", "data-hex"));
+    }
+  }
+  return rows.join("");
+}
+
+function fieldsTable(fields) {
+  if (!fields || !fields.length) return "";
+  const chunks = [];
+  let current = [];
+  const flush = () => {
+    if (!current.length) return;
+    chunks.push(`<tbody>${current.join("")}</tbody>`);
+    current = [];
+  };
+  for (const field of fields) {
+    if (field.id === "data") {
+      flush();
+      chunks.push(`<tbody class="data">${dataFieldRows(field)}</tbody>`);
+      continue;
+    }
+    current.push(tableRow(fieldNameCell(field), field.hex, fieldNoteHtml(field)));
+  }
+  flush();
+  return `<table class="apdu">${chunks.join("")}</table>`;
 }
 
 const SPEC_PILL_COLORS = {
@@ -122,53 +221,26 @@ function bitsHtml(bits) {
     .join("")}</tbody></table>`;
 }
 
-function partsHtml(parts) {
-  if (!parts || !parts.length) return "";
-  return `<div class="parts">${parts
-    .map(
-      (p) =>
-        `<div class="part"><div class="part-name">${esc(p.name)}</div><div class="mono">${esc(
-          p.hex
-        )}</div>${pillHtml(p.pills)}</div>`
-    )
-    .join("")}</div>`;
-}
-
-function fieldCard(field) {
-  return `<section class="field field-${esc(field.id)}">
-    <div class="field-head">
-      <span class="tag tag-${esc(field.id)}">${esc(field.name)}</span>
-      <span class="mono">${esc(field.hex)}</span>
-    </div>
-    ${field.meaning ? `<p class="meaning">${esc(field.meaning)}</p>` : ""}
-    ${pillHtml(field.pills)}
-    ${bitsHtml(field.bits)}
-    ${partsHtml(field.parts)}
-  </section>`;
-}
-
 function bodyFor(explanation) {
   const specs = specPillsHtml(uniqueSpecs(explanation));
-  const bytes = `<div class="bytes mono">${esc((explanation.bytes || []).join(" "))}</div>`;
   const alt = explanation.alternate
-    ? `<details class="alt"><summary>Also plausible as a response APDU</summary>${explanation.alternate.fields
-        .map(fieldCard)
-        .join("")}</details>`
+    ? `<details class="alt"><summary>Also plausible as a response APDU</summary>${fieldsTable(
+        explanation.alternate.fields
+      )}</details>`
     : "";
   return `
     <header>
-      <div class="kicker">${esc(explanation.role || "command")} · ${esc(explanation.confidence || "")}</div>
       <h1>${esc(explanation.title)}</h1>
       ${specs}
       ${explanation.summary ? `<p class="summary">${esc(explanation.summary)}</p>` : ""}
-      ${bytes}
     </header>
-    <div class="fields">${(explanation.fields || []).map(fieldCard).join("")}</div>
+    ${fieldsTable(explanation.fields)}
     ${alt}
   `;
 }
 
 function shellHtml(webview, extensionUri, title, inner) {
+  const vscode = vscodeApi();
   const cssUri = webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, "media", "panel.css"));
   return `<!DOCTYPE html>
 <html lang="en">
@@ -210,18 +282,6 @@ function padCol(text, width) {
   return s.length >= width ? `${s} ` : s.padEnd(width, " ");
 }
 
-function hexRows(hex, perLine) {
-  const bytes = String(hex || "")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-  const lines = [];
-  for (let i = 0; i < bytes.length; i += perLine) {
-    lines.push(bytes.slice(i, i + perLine).join(" "));
-  }
-  return lines;
-}
-
 function pillText(pills) {
   if (!pills || !pills.length) return "";
   const seen = new Set();
@@ -245,6 +305,7 @@ function fieldNote(field) {
 }
 
 function compactMarkdown(explanation) {
+  const vscode = vscodeApi();
   const md = new vscode.MarkdownString();
   md.isTrusted = true;
   md.supportHtml = true;
@@ -273,4 +334,5 @@ module.exports = {
   renderHtml,
   emptyHtml,
   compactMarkdown,
+  bodyFor,
 };

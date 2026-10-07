@@ -35,15 +35,7 @@ h1 {
 .summary {
   opacity: 0.9;
   line-height: 1.45;
-  margin: 8px 0 12px;
-}
-
-.bytes {
-  padding: 8px 10px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--vscode-textCodeBlock-background, rgba(127, 127, 127, 0.12));
-  margin: 10px 0 18px;
+  margin: 8px 0 14px;
 }
 
 .mono {
@@ -55,7 +47,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin: 8px 0;
+  margin: 0;
 }
 
 .spec-pills {
@@ -115,22 +107,76 @@ h1 {
   border-left: 1px solid rgba(255, 255, 255, 0.25);
 }
 
-.fields {
-  display: grid;
-  gap: 10px;
+.apdu {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
 }
 
-.field {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 12px;
+.apdu th,
+.apdu td {
+  padding: 6px 10px 6px 0;
+  vertical-align: top;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
 }
 
-.field-head {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 6px;
+.apdu tbody:last-child tr:last-child th,
+.apdu tbody:last-child tr:last-child td {
+  border-bottom: none;
+}
+
+.apdu tbody.data th,
+.apdu tbody.data td {
+  border-bottom: none;
+}
+
+.apdu tbody.data tr:last-child th,
+.apdu tbody.data tr:last-child td {
+  border-bottom: 1px solid var(--border);
+}
+
+.apdu tbody.data:last-child tr:last-child th,
+.apdu tbody.data:last-child tr:last-child td {
+  border-bottom: none;
+}
+
+.apdu th {
+  width: 4.5em;
+  font-weight: 600;
+  white-space: nowrap;
+  padding-top: 7px;
+}
+
+.apdu th.part {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.8;
+  padding-left: 8px;
+}
+
+.apdu .val {
+  width: 18em;
+  white-space: nowrap;
+}
+
+.apdu .note {
+  width: auto;
+}
+
+.apdu .note .pills {
+  display: inline-flex;
+  margin-left: 0;
+}
+
+.apdu .note .meaning + .pills {
+  margin-top: 4px;
+}
+
+.apdu tr.data-hex th,
+.apdu tr.data-hex td {
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 .tag {
@@ -151,19 +197,20 @@ h1 {
 .tag-raw { background: #ddd; }
 
 .meaning {
-  margin: 4px 0 6px;
+  margin: 0 6px 0 0;
 }
 
 .bits {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 6px;
+  margin-top: 4px;
   font-size: 12px;
 }
 
 .bits td {
-  padding: 3px 6px 3px 0;
+  padding: 2px 6px 2px 0;
   vertical-align: top;
+  border: none;
 }
 
 .bits .k {
@@ -174,23 +221,6 @@ h1 {
 .bits .v {
   font-family: var(--vscode-editor-font-family, ui-monospace, monospace);
   white-space: nowrap;
-}
-
-.parts {
-  display: grid;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.part {
-  padding: 8px;
-  border-radius: 6px;
-  background: var(--vscode-textCodeBlock-background, rgba(127, 127, 127, 0.1));
-}
-
-.part-name {
-  font-weight: 600;
-  margin-bottom: 4px;
 }
 
 .alt {
