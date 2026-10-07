@@ -38,6 +38,31 @@ h1 {
   margin: 8px 0 14px;
 }
 
+.instance {
+  margin: 0 0 18px;
+  padding: 10px 12px 12px;
+  background: var(--vscode-textCodeBlock-background, rgba(127, 127, 127, 0.12));
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.about h2 {
+  font-size: 13px;
+  font-weight: 650;
+  margin: 0 0 8px;
+  opacity: 0.85;
+}
+
+.about p {
+  line-height: 1.5;
+  margin: 0 0 8px;
+}
+
+.about .placeholder {
+  opacity: 0.75;
+  font-style: italic;
+}
+
 .mono {
   font-family: var(--vscode-editor-font-family, ui-monospace, SFMono-Regular, Menlo, monospace);
   font-size: 12px;

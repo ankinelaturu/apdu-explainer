@@ -135,6 +135,10 @@ eq(/<table class="apdu">/.test(selectHtml), true, "panel uses a field table");
 eq(/<h1>SELECT FILE<\/h1>/.test(selectHtml), true, "panel heading is command name");
 eq(/class="data-kind"[\s\S]*AID/.test(selectHtml), true, "DATA first row is the kind");
 eq(/class="data-hex"[\s\S]*colspan="2"[\s\S]*A0 00 00 02 47 10 01/.test(selectHtml), true, "DATA hex is on following rows");
+eq(/class="instance"/.test(selectHtml), true, "panel wraps the instance table in a band");
+eq(/About this command/.test(selectHtml), true, "panel has teaching-text placeholder");
+eq(/Teaching text for SELECT FILE/.test(selectHtml), true, "placeholder names the command");
+eq(/About this status word/.test(bodyFor(sw)), true, "response placeholder is status-word");
 
 const writeHtml = bodyFor(explain(joinedPlain[0].bytes, catalog));
 eq(

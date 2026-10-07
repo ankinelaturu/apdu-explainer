@@ -227,8 +227,20 @@ function bitsHtml(bits) {
     .join("")}</tbody></table>`;
 }
 
+function aboutHtml(explanation) {
+  const name = explanation.title || "this APDU";
+  const role = explanation.role === "response" ? "status word" : "command";
+  return `<section class="about">
+    <h2>About this ${esc(role)}</h2>
+    <p class="placeholder">Teaching text for ${esc(
+      name
+    )} will go here. Catalog descriptions will replace this placeholder.</p>
+  </section>`;
+}
+
 function bodyFor(explanation) {
   const specs = specPillsHtml(uniqueSpecs(explanation));
+  const table = fieldsTable(explanation.fields);
   const alt = explanation.alternate
     ? `<details class="alt"><summary>Also plausible as a response APDU</summary>${fieldsTable(
         explanation.alternate.fields
@@ -240,8 +252,8 @@ function bodyFor(explanation) {
       ${specs}
       ${explanation.summary ? `<p class="summary">${esc(explanation.summary)}</p>` : ""}
     </header>
-    ${fieldsTable(explanation.fields)}
-    ${alt}
+    ${table ? `<div class="instance">${table}${alt}</div>` : alt}
+    ${aboutHtml(explanation)}
   `;
 }
 
