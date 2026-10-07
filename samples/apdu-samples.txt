@@ -17,7 +17,7 @@ sadsadasda
 0x80,0xEE,0x01,0x00,0x05,0x12,0x34,0x41,0x42,0x43
 
 Two APDUs on one line
-00 A4 04 0C 07 A0 00 00 02 47 10 01    00 A4 02 0C 02 01 1E
+00 A4 04 0C 07 A0 00 00 02 47 10 01
 
 Custom demo overlay (80 EE)
 80 EE 01 00 05 12 34 41 42 43
