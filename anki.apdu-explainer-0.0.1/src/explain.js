@@ -9,6 +9,9 @@ const {
   lookupAids,
   lookupTags,
   lookupStatusWords,
+  lookupAbout,
+  aboutKeysForCommand,
+  aboutKeysForStatus,
   normHex,
 } = require("./catalog");
 
@@ -400,6 +403,7 @@ function explainCommand(bytes, catalog) {
     });
   }
 
+  const about = lookupAbout(catalog, aboutKeysForCommand(best));
   return {
     title,
     summary: commandSummary(title, fields, best && best.summary),
@@ -409,6 +413,8 @@ function explainCommand(bytes, catalog) {
     extended: !!parsed.extended,
     fields,
     claInfo,
+    aboutKey: about && about.key,
+    aboutMarkdown: about && about.markdown,
   };
 }
 
@@ -426,11 +432,14 @@ function explainResponse(bytes, catalog) {
     names.push(h.name);
   }
   const title = names.length ? names[0] : `SW ${sw}`;
+  const about = lookupAbout(catalog, aboutKeysForStatus(sw, hits));
   return {
     title,
     summary: names.length ? names.join(" · ") : "Trailing two bytes treated as status word.",
     specPills: hits.length ? pillsFromHits(hits) : unknownPill(sw),
     known: hits.length > 0,
+    aboutKey: about && about.key,
+    aboutMarkdown: about && about.markdown,
     fields: [
       ...(data.length
         ? [{ id: "data", name: "DATA", hex: toHexString(data), meaning: "Response data" }]

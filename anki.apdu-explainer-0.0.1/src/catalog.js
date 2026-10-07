@@ -82,17 +82,69 @@ function classifyItem(item) {
   return null;
 }
 
+function loadAboutDir(dir, map) {
+  if (!fs.existsSync(dir)) return;
+  for (const name of fs.readdirSync(dir).sort()) {
+    if (name.startsWith(".") || !name.endsWith(".md")) continue;
+    const full = path.join(dir, name);
+    if (!fs.statSync(full).isFile()) continue;
+    const key = name.slice(0, -3).toLowerCase();
+    map.set(key, fs.readFileSync(full, "utf8"));
+  }
+}
+
+function lookupAbout(catalog, keys) {
+  const about = catalog && catalog.about;
+  if (!about) return null;
+  const seen = new Set();
+  for (const raw of keys || []) {
+    const key = String(raw || "")
+      .trim()
+      .toLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    if (about.has(key)) return { key, markdown: about.get(key) };
+  }
+  return null;
+}
+
+function aboutKeysForCommand(entry) {
+  if (!entry) return [];
+  const keys = [];
+  if (entry.about) keys.push(entry.about);
+  if (entry.id) keys.push(entry.id);
+  return keys;
+}
+
+function aboutKeysForStatus(sw, hits) {
+  const keys = [];
+  const hex = normHex(sw);
+  if (hex) keys.push(`sw-${hex}`);
+  for (const h of hits || []) {
+    if (h && h.about) keys.push(h.about);
+    if (h && h.id) keys.push(h.id);
+    const pat = String((h && h.sw) || "")
+      .toLowerCase()
+      .replace(/\s/g, "");
+    if (pat) keys.push(`sw-${pat}`);
+  }
+  return keys;
+}
+
 function loadCatalog(root) {
   const commands = [];
   const files = [];
   const aids = [];
   const tags = [];
   const statusWords = [];
+  const about = new Map();
   loadJsonTree(path.join(root, "commands"), root, commands);
   loadJsonTree(path.join(root, "files"), root, files);
   loadJsonTree(path.join(root, "aids"), root, aids);
   loadJsonTree(path.join(root, "tags"), root, tags);
   loadJsonTree(path.join(root, "status-words"), root, statusWords);
+  loadAboutDir(path.join(root, "about"), about);
+  loadAboutDir(path.join(root, "custom", "about"), about);
 
   const customItems = [];
   loadJsonTree(path.join(root, "custom"), root, customItems);
@@ -117,6 +169,7 @@ function loadCatalog(root) {
     aids: mergeById(aids),
     tags: mergeById(tags),
     statusWords: swMerged,
+    about,
     cla,
     swIndex: {
       exact: new Set(swMerged.filter((s) => /^[0-9A-Fa-f]{4}$/.test(String(s.sw || "").replace(/\s/g, ""))).map((s) => String(s.sw).toUpperCase().replace(/\s/g, ""))),
@@ -233,5 +286,8 @@ module.exports = {
   lookupAids,
   lookupTags,
   lookupStatusWords,
+  lookupAbout,
+  aboutKeysForCommand,
+  aboutKeysForStatus,
   normHex,
 };

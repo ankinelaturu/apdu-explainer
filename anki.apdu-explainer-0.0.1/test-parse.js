@@ -7,6 +7,7 @@ const { explain, lensTitle } = require("./src/explain");
 const { joinedRunsFromLines, displayableGroupsFromLines, wrapRowsWellFormed } = require("./src/joinHex");
 const { parseCommand, isTruncatedCommand, splitIntoApdus } = require("./src/parseApdu");
 const { bodyFor } = require("./src/panel");
+const { renderMarkdown } = require("./src/markdown");
 
 const catalog = loadCatalog(path.join(__dirname, "catalog"));
 let failed = 0;
@@ -136,9 +137,19 @@ eq(/<h1>SELECT FILE<\/h1>/.test(selectHtml), true, "panel heading is command nam
 eq(/class="data-kind"[\s\S]*AID/.test(selectHtml), true, "DATA first row is the kind");
 eq(/class="data-hex"[\s\S]*colspan="2"[\s\S]*A0 00 00 02 47 10 01/.test(selectHtml), true, "DATA hex is on following rows");
 eq(/class="instance"/.test(selectHtml), true, "panel wraps the instance table in a band");
-eq(/About this command/.test(selectHtml), true, "panel has teaching-text placeholder");
-eq(/Teaching text for SELECT FILE/.test(selectHtml), true, "placeholder names the command");
-eq(/About this status word/.test(bodyFor(sw)), true, "response placeholder is status-word");
+eq(selectApp.aboutKey, "iso-select", "SELECT FILE loads iso-select.md");
+eq(/What it does/.test(selectHtml), true, "panel renders SELECT teaching markdown");
+eq(/<section class="about">[\s\S]*<table>/.test(selectHtml), true, "teaching page includes a markdown table");
+eq(sw.aboutKey, "sw-9000", "90 00 loads sw-9000.md");
+eq(/Normal processing/.test(bodyFor(sw)), true, "status-word page is rendered");
+eq(explain(hex("61 1C"), catalog).aboutKey, "sw-61xx", "61xx pattern loads sw-61xx.md");
+eq(explain(hex("00 D0 00 00 01 FF"), catalog).aboutKey, "iso-write-binary", "WRITE BINARY loads matching page");
+eq(explain(hex("00 CB 3F FF 00"), catalog).aboutKey, "iso-get-data", "odd GET DATA shares iso-get-data.md");
+eq(
+  /<th>P1<\/th>/.test(renderMarkdown("| P1 | Meaning |\n| --- | --- |\n| `04` | AID |\n")),
+  true,
+  "markdown tables render headers"
+);
 
 const writeHtml = bodyFor(explain(joinedPlain[0].bytes, catalog));
 eq(

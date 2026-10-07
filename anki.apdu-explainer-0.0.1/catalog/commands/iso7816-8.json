@@ -37,6 +37,7 @@
     "id": "iso8-gakp-odd",
     "spec": "ISO 7816-8",
     "name": "GENERATE ASYMMETRIC KEY PAIR",
+    "about": "iso8-gakp",
     "match": { "ins": "47", "claKind": "iso" }
   }
 ]

@@ -149,6 +149,7 @@
     "id": "iso-get-data-odd",
     "spec": "ISO 7816-4",
     "name": "GET DATA",
+    "about": "iso-get-data",
     "summary": "Odd-INS GET DATA (often used with BER-TLV in the command data).",
     "match": { "ins": "CB", "claKind": "iso" }
   },
@@ -163,6 +164,7 @@
     "id": "iso-put-data-odd",
     "spec": "ISO 7816-4",
     "name": "PUT DATA",
+    "about": "iso-put-data",
     "match": { "ins": "DB", "claKind": "iso" }
   },
   {
@@ -256,6 +258,7 @@
     "id": "iso-general-authenticate-odd",
     "spec": "ISO 7816-4",
     "name": "GENERAL AUTHENTICATE",
+    "about": "iso-general-authenticate",
     "match": { "ins": "87", "claKind": "iso" }
   },
   {
@@ -281,6 +284,7 @@
     "id": "iso-envelope-odd",
     "spec": "ISO 7816-4",
     "name": "ENVELOPE",
+    "about": "iso-envelope",
     "match": { "ins": "C3", "claKind": "iso" }
   },
   {

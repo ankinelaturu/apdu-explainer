@@ -23,6 +23,7 @@
     "id": "uicc-authenticate-odd",
     "spec": "ETSI TS 102 221",
     "name": "AUTHENTICATE",
+    "about": "uicc-authenticate",
     "match": { "ins": "89", "claKind": "iso" }
   },
   {
