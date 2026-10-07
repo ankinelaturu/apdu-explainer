@@ -134,7 +134,7 @@ eq(/class="bytes"/.test(selectHtml), false, "panel does not repeat APDU bytes");
 eq(/<table class="apdu">/.test(selectHtml), true, "panel uses a field table");
 eq(/<h1>SELECT FILE<\/h1>/.test(selectHtml), true, "panel heading is command name");
 eq(/class="data-kind"[\s\S]*AID/.test(selectHtml), true, "DATA first row is the kind");
-eq(/class="data-hex"[\s\S]*A0 00 00 02 47 10 01/.test(selectHtml), true, "DATA hex is on following rows");
+eq(/class="data-hex"[\s\S]*colspan="2"[\s\S]*A0 00 00 02 47 10 01/.test(selectHtml), true, "DATA hex is on following rows");
 
 const writeHtml = bodyFor(explain(joinedPlain[0].bytes, catalog));
 eq(

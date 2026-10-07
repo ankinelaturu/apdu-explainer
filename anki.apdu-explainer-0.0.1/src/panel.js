@@ -68,6 +68,10 @@ function tableRow(nameCell, value, note, extraClass, valueClass) {
   }</td></tr>`;
 }
 
+function dataHexRow(line) {
+  return `<tr class="data-hex"><th></th><td class="val mono" colspan="2">${esc(line)}</td></tr>`;
+}
+
 function dataKindLabel(meaning) {
   const s = String(meaning || "");
   if (/^(aid|fid|tag|path|raw|fields)$/i.test(s)) return s.toUpperCase();
@@ -86,7 +90,7 @@ function dataFieldRows(field) {
     )
   );
   for (const line of hexRows(field.hex, HEX_PER_LINE)) {
-    rows.push(tableRow("<th></th>", line, "", "data-hex"));
+    rows.push(dataHexRow(line));
   }
   for (const part of field.parts || []) {
     const lines = hexRows(part.hex, HEX_PER_LINE);
@@ -94,7 +98,7 @@ function dataFieldRows(field) {
       tableRow(`<th class="part">${esc(part.name)}</th>`, lines[0] || "", pillHtml(part.pills), "data-part")
     );
     for (const line of lines.slice(1)) {
-      rows.push(tableRow("<th></th>", line, "", "data-hex"));
+      rows.push(dataHexRow(line));
     }
   }
   return rows.join("");
@@ -118,7 +122,9 @@ function fieldsTable(fields) {
     current.push(tableRow(fieldNameCell(field), field.hex, fieldNoteHtml(field)));
   }
   flush();
-  return `<table class="apdu">${chunks.join("")}</table>`;
+  return `<table class="apdu"><colgroup><col class="col-name" /><col class="col-val" /><col class="col-note" /></colgroup>${chunks.join(
+    ""
+  )}</table>`;
 }
 
 const SPEC_PILL_COLORS = {

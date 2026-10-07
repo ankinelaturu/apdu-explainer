@@ -109,8 +109,21 @@ h1 {
 
 .apdu {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   margin: 0;
+}
+
+.apdu .col-name {
+  width: 4.75em;
+}
+
+.apdu .col-val {
+  width: 5.5em;
+}
+
+.apdu .col-note {
+  width: auto;
 }
 
 .apdu th,
@@ -142,7 +155,6 @@ h1 {
 }
 
 .apdu th {
-  width: 4.5em;
   font-weight: 600;
   white-space: nowrap;
   padding-top: 7px;
@@ -156,12 +168,7 @@ h1 {
 }
 
 .apdu .val {
-  width: 18em;
   white-space: nowrap;
-}
-
-.apdu .note {
-  width: auto;
 }
 
 .apdu .note .pills {
@@ -177,6 +184,10 @@ h1 {
 .apdu tr.data-hex td {
   padding-top: 2px;
   padding-bottom: 2px;
+}
+
+.apdu tr.data-hex td[colspan] {
+  white-space: nowrap;
 }
 
 .tag {
