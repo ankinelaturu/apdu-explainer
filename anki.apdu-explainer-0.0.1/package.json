@@ -17,7 +17,7 @@
   "main": "./extension.js",
   "contributes": {
     "configurationDefaults": {
-      "editor.codeLensFontSize": 11
+      "editor.codeLens": true
     },
     "viewsContainers": {
       "panel": [
@@ -55,10 +55,24 @@
     "configuration": {
       "title": "APDU Explainer",
       "properties": {
-        "apduExplainer.enableCodeLens": {
+        "apduExplainer.codeLens.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Show a named CodeLens above each detected APDU"
+        },
+        "apduExplainer.codeLens.fontSize": {
+          "type": "number",
+          "default": 11,
+          "minimum": 8,
+          "maximum": 24,
+          "description": "Font size of APDU CodeLens labels, in pixels"
+        },
+        "apduExplainer.codeLens.paddingTop": {
+          "type": "number",
+          "default": 4,
+          "minimum": 0,
+          "maximum": 32,
+          "description": "Extra space above the APDU line under the CodeLens, in pixels"
         },
         "apduExplainer.enableDecorations": {
           "type": "boolean",

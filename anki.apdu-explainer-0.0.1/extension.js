@@ -11,7 +11,18 @@ let catalog;
 let detailsView;
 let lastExplanation;
 let decorationType;
+let paddingType;
 let onDidChangeCodeLenses;
+
+function codeLensSettings() {
+  const cfg = vscode.workspace.getConfiguration("apduExplainer");
+  const nested = cfg.get("codeLens") || {};
+  return {
+    enabled: nested.enabled !== false,
+    fontSize: Number(nested.fontSize) > 0 ? Number(nested.fontSize) : 11,
+    paddingTop: Math.max(0, Number(nested.paddingTop) || 0),
+  };
+}
 
 function catalogRoot(context) {
   return path.join(context.extensionPath, "catalog");
@@ -55,18 +66,54 @@ function explainBytes(context, bytes) {
   showExplanation(context, explain(bytes, catalog));
 }
 
+function recreatePaddingType() {
+  if (paddingType) {
+    paddingType.dispose();
+    paddingType = undefined;
+  }
+  const { enabled, paddingTop } = codeLensSettings();
+  if (!enabled || paddingTop <= 0) return;
+  paddingType = vscode.window.createTextEditorDecorationType({
+    isWholeLine: true,
+    borderWidth: `${paddingTop}px 0 0 0`,
+    borderStyle: "solid",
+    borderColor: "transparent",
+  });
+}
+
+function syncCodeLensFontSize() {
+  const { fontSize } = codeLensSettings();
+  const editorCfg = vscode.workspace.getConfiguration("editor");
+  if (editorCfg.get("codeLensFontSize") !== fontSize) {
+    editorCfg.update("codeLensFontSize", fontSize, vscode.ConfigurationTarget.Workspace);
+  }
+}
+
 function updateDecorations(editor) {
   if (!editor || !decorationType) return;
-  const enabled = vscode.workspace.getConfiguration("apduExplainer").get("enableDecorations", true);
-  if (!enabled) {
-    editor.setDecorations(decorationType, []);
-    return;
-  }
+  const cfg = vscode.workspace.getConfiguration("apduExplainer");
+  const { enabled, paddingTop } = codeLensSettings();
   const spans = getSpans(editor.document, catalog);
   editor.setDecorations(
     decorationType,
-    spans.map((s) => ({ range: s.range }))
+    cfg.get("enableDecorations", true) ? spans.map((s) => ({ range: s.range })) : []
   );
+  if (paddingType) {
+    const lines = new Set(spans.map((s) => s.range.start.line));
+    editor.setDecorations(
+      paddingType,
+      enabled && paddingTop > 0
+        ? [...lines].map((line) => ({
+            range: new vscode.Range(line, 0, line, 0),
+          }))
+        : []
+    );
+  }
+}
+
+function lensKindPrefix(span) {
+  if (span.explanation && span.explanation.role === "response") return "Response APDU";
+  return "Command APDU";
 }
 
 function lensTitleFor(document, span) {
@@ -74,7 +121,7 @@ function lensTitleFor(document, span) {
     (s) => s.range.start.line === span.range.start.line && s.title === span.title
   ).length;
   const name = counts > 1 ? `${span.title}  ${(span.explanation.bytes || []).slice(0, 4).join(" ")}` : span.title;
-  return `APDU: ${name}`;
+  return `${lensKindPrefix(span)}: ${name}`;
 }
 
 function activate(context) {
@@ -144,7 +191,7 @@ function activate(context) {
     vscode.languages.registerCodeLensProvider([{ scheme: "file" }, { scheme: "untitled" }], {
       onDidChangeCodeLenses: onDidChangeCodeLenses.event,
       provideCodeLenses(document) {
-        if (!vscode.workspace.getConfiguration("apduExplainer").get("enableCodeLens", true)) {
+        if (!codeLensSettings().enabled) {
           return [];
         }
         return getSpans(document, catalog).map((span) => {
@@ -212,7 +259,13 @@ function activate(context) {
       if (onDidChangeCodeLenses) onDidChangeCodeLenses.fire();
     }),
     vscode.workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration("apduExplainer")) refresh();
+      if (e.affectsConfiguration("apduExplainer.codeLens")) {
+        recreatePaddingType();
+        syncCodeLensFontSize();
+        refresh();
+      } else if (e.affectsConfiguration("apduExplainer")) {
+        refresh();
+      }
     }),
     decorationType,
     onDidChangeCodeLenses
@@ -230,9 +283,13 @@ function activate(context) {
   watcher.onDidDelete(reload);
   context.subscriptions.push(watcher);
 
+  recreatePaddingType();
+  syncCodeLensFontSize();
   refresh();
 }
 
-function deactivate() {}
+function deactivate() {
+  if (paddingType) paddingType.dispose();
+}
 
 module.exports = { activate, deactivate };
