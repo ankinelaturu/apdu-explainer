@@ -63,6 +63,13 @@ eq(customUnknown.title, "CUSTOM APDU", "unknown ins");
 const gpo = explain(hex("80 A8 00 00 02 83 00 00"), catalog);
 eq(gpo.title, "GET PROCESSING OPTIONS", "emv gpo");
 
+const oddGetData = explain(hex("00 CB 3F FF 00"), catalog);
+const oddSpecs = [...new Set((oddGetData.specPills || []).map((p) => p.spec))];
+eq(oddSpecs.length >= 3, true, "odd INS CB matches 3+ specs");
+eq(oddSpecs.includes("ISO 7816-4"), true, "odd INS CB includes ISO 7816-4");
+eq(oddSpecs.includes("NIST PIV"), true, "odd INS CB includes NIST PIV");
+eq(oddSpecs.includes("ETSI TS 102 221"), true, "odd INS CB includes UICC");
+
 if (failed) {
   console.error(failed + " failed");
   process.exit(1);

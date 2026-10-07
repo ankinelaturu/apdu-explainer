@@ -58,6 +58,41 @@ h1 {
   margin: 8px 0;
 }
 
+.spec-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 2px 0 10px;
+}
+
+.spec-chip {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  padding: 1px 8px;
+  border-radius: 999px;
+}
+
+.spec-tone-0 { background: #3d5a80; color: #eaf2ff; }
+.spec-tone-1 { background: #1b7a4a; color: #d8f5e3; }
+.spec-tone-2 { background: #8a4b12; color: #ffe8cc; }
+.spec-tone-3 { background: #5b4a86; color: #eee6ff; }
+.spec-tone-4 { background: #7a3e3e; color: #ffdede; }
+.spec-tone-5 { background: #0e6b72; color: #d4f4f7; }
+.spec-tone-6 { background: #2f5d73; color: #d6eef8; }
+.spec-tone-7 { background: #4a5a2a; color: #eaf3c8; }
+
+.spec-iso-7816-4, .spec-iso-7816-8, .spec-iso-7816-9 { background: #3d5a80; color: #eaf2ff; }
+.spec-emrtd { background: #1b7a4a; color: #d8f5e3; }
+.spec-emv { background: #8a4b12; color: #ffe8cc; }
+.spec-globalplatform { background: #5b4a86; color: #eee6ff; }
+.spec-nist-piv { background: #7a3e3e; color: #ffdede; }
+.spec-etsi-ts-102-221, .spec-etsi-ts-102-223 { background: #0e6b72; color: #d4f4f7; }
+.spec-openpgp-card { background: #2f5d73; color: #d6eef8; }
+.spec-u2f { background: #4a5a2a; color: #eaf3c8; }
+
 .chip {
   display: inline-flex;
   align-items: center;

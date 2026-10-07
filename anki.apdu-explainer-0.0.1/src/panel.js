@@ -22,6 +22,94 @@ function pillHtml(pills) {
     .join("")}</div>`;
 }
 
+const SPEC_PILL_COLORS = {
+  "ISO 7816-4": ["#3d5a80", "#eaf2ff"],
+  "ISO 7816-8": ["#35506f", "#eaf2ff"],
+  "ISO 7816-9": ["#2f4864", "#eaf2ff"],
+  eMRTD: ["#1b7a4a", "#d8f5e3"],
+  EMV: ["#8a4b12", "#ffe8cc"],
+  GlobalPlatform: ["#5b4a86", "#eee6ff"],
+  "NIST PIV": ["#7a3e3e", "#ffdede"],
+  "ETSI TS 102 221": ["#0e6b72", "#d4f4f7"],
+  "ETSI TS 102 223": ["#0b5c62", "#d4f4f7"],
+  "OpenPGP Card": ["#2f5d73", "#d6eef8"],
+  U2F: ["#4a5a2a", "#eaf3c8"],
+};
+
+const SPEC_PILL_TONES = [
+  ["#3d5a80", "#eaf2ff"],
+  ["#1b7a4a", "#d8f5e3"],
+  ["#8a4b12", "#ffe8cc"],
+  ["#5b4a86", "#eee6ff"],
+  ["#7a3e3e", "#ffdede"],
+  ["#0e6b72", "#d4f4f7"],
+  ["#2f5d73", "#d6eef8"],
+  ["#4a5a2a", "#eaf3c8"],
+];
+
+function specTone(spec) {
+  let h = 0;
+  for (const c of String(spec)) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return h % SPEC_PILL_TONES.length;
+}
+
+function specSlug(spec) {
+  return (
+    String(spec)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "other"
+  );
+}
+
+function specColor(spec) {
+  return SPEC_PILL_COLORS[spec] || SPEC_PILL_TONES[specTone(spec)];
+}
+
+function uniqueSpecs(explanation) {
+  const seen = new Set();
+  const specs = [];
+  for (const p of explanation.specPills || []) {
+    const spec = p.spec || p.name;
+    if (!spec || seen.has(spec)) continue;
+    seen.add(spec);
+    specs.push(spec);
+  }
+  return specs;
+}
+
+function specPillsHtml(specs) {
+  if (!specs.length) return "";
+  return `<div class="spec-pills">${specs
+    .map((spec) => {
+      const [bg, fg] = specColor(spec);
+      return `<span class="spec-chip spec-${esc(specSlug(spec))} spec-tone-${specTone(
+        spec
+      )}" style="background:${bg};color:${fg}">${esc(spec)}</span>`;
+    })
+    .join("")}</div>`;
+}
+
+function specPillsHoverHtml(specs) {
+  if (!specs.length) return "";
+  return specs.map(specPillMarkdownImage).join(" ");
+}
+
+function specPillMarkdownImage(spec) {
+  const [bg, fg] = specColor(spec);
+  const label = String(spec);
+  const width = Math.max(32, Math.ceil(label.length * 5.9 + 14));
+  const height = 16;
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+    `<rect width="${width}" height="${height}" rx="8" fill="${bg}"/>` +
+    `<text x="${(width / 2).toFixed(1)}" y="11.5" text-anchor="middle" font-size="9" font-family="-apple-system,Segoe UI,Helvetica,sans-serif" font-weight="400" fill="${fg}">${esc(
+      label
+    )}</text>` +
+    `</svg>`;
+  return `![${label}](data:image/svg+xml;utf8,${encodeURIComponent(svg)})`;
+}
+
 function bitsHtml(bits) {
   if (!bits || !bits.length) return "";
   return `<table class="bits"><tbody>${bits
@@ -60,7 +148,7 @@ function fieldCard(field) {
 }
 
 function bodyFor(explanation) {
-  const specs = pillHtml(explanation.specPills);
+  const specs = specPillsHtml(uniqueSpecs(explanation));
   const bytes = `<div class="bytes mono">${esc((explanation.bytes || []).join(" "))}</div>`;
   const alt = explanation.alternate
     ? `<details class="alt"><summary>Also plausible as a response APDU</summary>${explanation.alternate.fields
@@ -159,10 +247,10 @@ function fieldNote(field) {
 function compactMarkdown(explanation) {
   const md = new vscode.MarkdownString();
   md.isTrusted = true;
-  md.supportHtml = false;
-  const specs = [...new Set((explanation.specPills || []).map((p) => p.spec || p.name).filter(Boolean))].join(" · ");
+  md.supportHtml = true;
+  const specs = uniqueSpecs(explanation);
   md.appendMarkdown(`**${explanation.title}**\n\n`);
-  if (specs) md.appendMarkdown(`${specs}\n\n`);
+  if (specs.length) md.appendMarkdown(`${specPillsHoverHtml(specs)}\n\n`);
   if (explanation.summary) md.appendMarkdown(`${explanation.summary}\n\n`);
 
   const rows = [];
