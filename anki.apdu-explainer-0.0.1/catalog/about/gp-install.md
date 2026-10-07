@@ -1,9 +1,9 @@
-## What it does
-
 INSTALL is the GP registry multi-tool. P1 chooses the stage; several bits can be combined (install + make selectable = `0C`).
 
+## Stage (P1)
+
 | P1 | Stage |
-| --- | --- |
+|----|--------|
 | `02` | For load |
 | `04` | For install |
 | `08` | For make selectable |
@@ -14,10 +14,10 @@ INSTALL is the GP registry multi-tool. P1 chooses the stage; several bits can be
 
 Data is a concatenation of AID / privileges / install parameters TLVs. LOAD of CAP blocks usually follows INSTALL [for load].
 
-## Typical status
+## Status words you will see
 
 | SW | Meaning |
-| --- | --- |
+|----|---------|
 | `90 00` | Done |
 | `6A 80` | Bad parameters |
 | `6A 84` | Not enough memory |

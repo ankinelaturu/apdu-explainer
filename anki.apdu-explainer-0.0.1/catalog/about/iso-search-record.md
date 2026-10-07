@@ -1,12 +1,17 @@
-## What it does
+SEARCH RECORD looks for a pattern **inside records** of the current EF (or an SFI named in P2).
 
-SEARCH RECORD looks for a pattern inside records of the current (or SFI) EF. P1/P2 choose the starting record and mode. Command data is the search string, sometimes with a simple mask.
+## Starting record and mode
 
-A match usually returns the record number and/or the record body, depending on the card.
+P1/P2 choose where to start, using the same SFI + mode packing as READ RECORD (`010` = next, `100` = record P1, and so on).
 
-## Typical status
+## The pattern
+
+Command data is the search string. Some cards allow a simple mask; ISO does not require one. A match usually returns the record number and/or the record body, depending on the card.
+
+## Status words you will see
 
 | SW | Meaning |
-| --- | --- |
+|----|---------|
 | `90 00` | Match |
 | `6A 83` | No match / record not found |
+| `6981` | Not a record EF |

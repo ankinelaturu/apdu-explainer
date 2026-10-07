@@ -1,27 +1,25 @@
-## What it does
+READ BINARY returns bytes from a **transparent EF** (a flat byte array). Offset comes from P1-P2; how many bytes comes from Le. This is how you read eMRTD data groups and many proprietary EFs.
 
-READ BINARY returns bytes from a **transparent EF** (a flat byte array). Offset and length come from P1-P2 and Le. It is the usual way to read eMRTD data groups, PIV objects stored as files, and many proprietary EFs.
+It does **not** apply to record files — use READ RECORD. On a linear/cyclic EF you typically get `6981` or `6986`.
 
-It does **not** apply to record-oriented EFs — use READ RECORD there. Sending READ BINARY to a linear/cyclic file typically returns `6981` (incompatible with file structure) or `6986` (no current EF).
+## Offset vs short file identifier (P1-P2)
 
-## Where to read (P1-P2)
-
-Two encodings share the same INS `B0`:
+Two encodings share INS `B0`:
 
 | Mode | How to recognize | Offset |
 |------|------------------|--------|
 | Full offset | P1 bit 8 = `0` | 15-bit offset in P1-P2 |
 | Short File Identifier | P1 bit 8 = `1` | SFI in P1 bits 5–1, offset in P2 |
 
-SFI lets you read a well-known EF **without** SELECT FILE first. eMRTD EF.COM is often SFI `1E` (`P1 = 9E`). Offset `00` means “start of file”.
+SFI lets you read a well-known EF **without** SELECT FILE first. eMRTD EF.COM is often SFI `1E` (`P1 = 9E`). Offset `00` is the start of the file.
 
-Le is the maximum number of bytes you want. `00` as a short Le means 256. If the file is shorter, the card returns what it has, often with `6282` (end of file before Le bytes).
+Le is the maximum you want. Short Le `00` means 256. If the file is shorter, the card returns what it has, often with `6282`.
 
-## Typical status
+## Status words you will see
 
 | SW | Meaning |
 |----|---------|
-| `90 00` | Returned `Le` bytes (or the rest of the file) |
+| `90 00` | Returned Le bytes (or the rest of the file) |
 | `6282` | Hit the end of the file before Le |
 | `6B 00` | Offset outside the file |
 | `6982` | Not allowed (SM / access conditions) |
@@ -29,6 +27,6 @@ Le is the maximum number of bytes you want. `00` as a short Le means 256. If the
 | `6C xx` | Wrong Le; resend with Le = `xx` |
 | `61 xx` | More data (T=0) — GET RESPONSE |
 
-## What to send next
+## Reading past the first chunk
 
-To continue a large file, increment the offset by the number of bytes you already got and READ BINARY again. Do not assume a 256-byte file if you asked for `Le = 00` and got fewer bytes — check `6282`.
+Increment the offset by the number of bytes you already got and READ BINARY again. If Le was `00` and you got fewer than 256 bytes, check `6282` before assuming the file is done.

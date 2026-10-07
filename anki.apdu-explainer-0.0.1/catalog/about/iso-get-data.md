@@ -1,19 +1,18 @@
-## What it does
+GET DATA retrieves a **data object** identified by a BER-TLV tag, not a file. Typical objects: ATC (`9F36`), PIN try counter (`9F17`), card production life cycle, OpenPGP application data.
 
-GET DATA retrieves a **data object** identified by a BER-TLV tag, not a file. The tag is usually P1-P2 (even INS `CA`). Odd INS `CB` often puts the tag in the command data instead (PIV, UICC RETRIEVE DATA).
+## Even INS `CA` — tag in P1-P2
 
-Typical objects: application template, ATC (`9F36`), PIN try counter (`9F17`), card production life cycle, OpenPGP application data.
+P1-P2 is the tag. Command data is empty. Le is the expected length (`00` = 256). This is the ISO / EMV / OpenPGP / GP form.
 
-## Even vs odd INS
+## Odd INS `CB` — tag in DATA
 
-| INS | Form |
-|-----|------|
-| `CA` | Tag in P1-P2, empty command data, Le = expected length |
-| `CB` | Tag (and optional nested TLV) in DATA; P1-P2 often `3F FF` or `00 00` |
+The tag (often nested in tag `5C`) sits in the command data. P1-P2 is frequently `3F FF` (PIV) or `00 00`. UICC calls this RETRIEVE DATA.
 
-PIV GET DATA is `00 CB 3F FF` with `{ 5C <len> <tag> }` in the data field.
+PIV GET DATA is `00 CB 3F FF` with `{ 5C <len> <tag> }` in DATA.
 
-## Typical status
+If several specs match the same INS, the pills above list them. The object you get still depends on the selected application.
+
+## Status words you will see
 
 | SW | Meaning |
 |----|---------|
@@ -23,5 +22,3 @@ PIV GET DATA is `00 CB 3F FF` with `{ 5C <len> <tag> }` in the data field.
 | `6982` | Access conditions not satisfied |
 | `6C xx` | Wrong Le |
 | `61 xx` | More bytes — GET RESPONSE |
-
-If several specs match the same INS (ISO, PIV, UICC, EMV), the pills above list them. The object you get still depends on the selected application.

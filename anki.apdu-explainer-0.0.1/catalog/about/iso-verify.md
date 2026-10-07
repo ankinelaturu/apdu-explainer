@@ -1,10 +1,8 @@
-## What it does
+VERIFY compares presented data (PIN, password, biometric) with a **reference** stored on the card. Success sets a security status that later commands can require. Failure decrements a retry counter.
 
-VERIFY compares presented data (PIN, password, biometric) with a **reference** stored on the card. Success sets a security status that later commands can require. Failure decrements a retry counter; `63 Cx` reports remaining tries `x`.
+Empty command data (Lc = 0) often means “is this PIN already verified?” without presenting a PIN.
 
-Empty command data (Lc = 0) often means “check whether this PIN is already verified” without presenting a PIN.
-
-## P2 — which reference
+## Which reference (P2)
 
 | Bit | Meaning |
 |-----|---------|
@@ -13,7 +11,7 @@ Empty command data (Lc = 0) often means “check whether this PIN is already ver
 
 OpenPGP maps this to PW1 signing (`81`), PW1 other (`82`), and PW3 admin (`83`).
 
-## Typical status
+## Tries left vs blocked
 
 | SW | Meaning |
 |----|---------|

@@ -1,13 +1,17 @@
-## What it does
+UICC AUTHENTICATE (INS `88` / odd `89`) runs the USIM / ISIM / GSM authentication algorithm.
 
-UICC AUTHENTICATE (INS `88` / odd `89`) runs the USIM/ISIM/GSM authentication algorithm. Command data is RAND (and AUTN for UMTS/EPS/5G). P2 encodes MF vs DF-specific and the reference number.
+## RAND and AUTN in DATA
 
-Success returns RES / CK / IK or a GSM SRES/Kc, or AUTS on sync failure.
+Command data is RAND (and AUTN for UMTS/EPS/5G). Success returns RES / CK / IK, or GSM SRES/Kc, or AUTS on sync failure.
 
-## Typical status
+## MF vs DF (P2)
+
+P2 encodes MF vs DF-specific (bit 8) and the reference number (bits 5–1).
+
+## Status words you will see
 
 | SW | Meaning |
-| --- | --- |
+|----|---------|
 | `90 00` | Authentication output in DATA |
 | `9862` | Authentication error (profile-specific) |
 | `6982` | Access conditions |

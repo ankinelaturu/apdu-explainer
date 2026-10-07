@@ -1,10 +1,17 @@
-## What it does
+UPDATE BINARY **replaces** bytes in a transparent EF. Unlike WRITE BINARY, the new value is stored as given (no OR with previous bits).
 
-UPDATE BINARY **replaces** bytes in a transparent EF at the offset in P1-P2. Unlike WRITE BINARY, the new value is stored as given (no OR with previous bits).
+## Offset (P1-P2)
 
-Offset encoding matches READ BINARY: P1 bit 8 clear → 15-bit offset in P1-P2; P1 bit 8 set → SFI in P1, offset in P2.
+Same encoding as READ BINARY:
 
-## Typical status
+| Mode | P1 bit 8 | Offset |
+|------|----------|--------|
+| Full offset | `0` | 15-bit offset in P1-P2 |
+| SFI | `1` | SFI in P1 bits 5–1, offset in P2 |
+
+Use this when you mean “put these bytes here”. Use WRITE BINARY when the file is write-once / bit-set style.
+
+## Status words you will see
 
 | SW | Meaning |
 |----|---------|
@@ -13,5 +20,3 @@ Offset encoding matches READ BINARY: P1 bit 8 clear → 15-bit offset in P1-P2; 
 | `6981` | Not a transparent EF |
 | `6B 00` | Offset outside the file |
 | `6581` | Memory failure |
-
-Use this when you mean “put these bytes here”. Use WRITE BINARY when the file is write-once / bit-set style.

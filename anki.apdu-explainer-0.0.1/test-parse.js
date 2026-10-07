@@ -138,7 +138,8 @@ eq(/class="data-kind"[\s\S]*AID/.test(selectHtml), true, "DATA first row is the 
 eq(/class="data-hex"[\s\S]*colspan="2"[\s\S]*A0 00 00 02 47 10 01/.test(selectHtml), true, "DATA hex is on following rows");
 eq(/class="instance"/.test(selectHtml), true, "panel wraps the instance table in a band");
 eq(selectApp.aboutKey, "iso-select", "SELECT FILE loads iso-select.md");
-eq(/What it does/.test(selectHtml), true, "panel renders SELECT teaching markdown");
+eq(/<h2>Reference<\/h2>/.test(selectHtml), true, "panel labels the teaching block Reference");
+eq(/How the name is given/.test(selectHtml), true, "panel renders SELECT teaching markdown");
 eq(/<section class="about">[\s\S]*<table>/.test(selectHtml), true, "teaching page includes a markdown table");
 eq(sw.aboutKey, "sw-9000", "90 00 loads sw-9000.md");
 eq(/Normal processing/.test(bodyFor(sw)), true, "status-word page is rendered");

@@ -230,15 +230,10 @@ function bitsHtml(bits) {
 }
 
 function aboutHtml(explanation) {
-  if (explanation.aboutMarkdown) {
-    return `<section class="about">${renderMarkdown(explanation.aboutMarkdown)}</section>`;
-  }
-  const name = explanation.title || "this APDU";
-  const role = explanation.role === "response" ? "status word" : "command";
-  return `<section class="about">
-    <h2>About this ${esc(role)}</h2>
-    <p class="placeholder">No teaching page yet for ${esc(name)}.</p>
-  </section>`;
+  const body = explanation.aboutMarkdown
+    ? renderMarkdown(explanation.aboutMarkdown)
+    : `<p class="placeholder">No reference page yet for ${esc(explanation.title || "this APDU")}.</p>`;
+  return `<section class="about"><h2>Reference</h2><div class="about-body">${body}</div></section>`;
 }
 
 function bodyFor(explanation) {

@@ -1,18 +1,16 @@
-## What it does
+MANAGE SECURITY ENVIRONMENT tells the card **which keys and algorithms** the next security command should use. It does not compute a cryptogram. EXTERNAL AUTHENTICATE, INTERNAL AUTHENTICATE, GENERAL AUTHENTICATE, and PERFORM SECURITY OPERATION all read the SE / CRT set here.
 
-MANAGE SECURITY ENVIRONMENT (MSE) tells the card **which keys and algorithms** the next security command should use. It does not compute a cryptogram itself. EXTERNAL AUTHENTICATE, INTERNAL AUTHENTICATE, GENERAL AUTHENTICATE, and PERFORM SECURITY OPERATION all read the current SE / CRT set by MSE.
-
-## P1 — set, store, restore
+## SET, STORE, RESTORE (P1)
 
 | P1 | Action |
 |----|--------|
-| `01` / `41` / `81` / `C1` / `F3` | **SET** control reference template |
+| `01` / `41` / `81` / `C1` / `F3` | **SET** a control reference template |
 | `02` / `F4` | **STORE** the current SE |
 | `03` / `F2` | **RESTORE** a stored SE |
 
-Exact P1 values vary by profile (ISO, eMRTD PACE, IAS). `C1` SET with an Authentication Template is the usual PACE/Chip Authentication setup.
+Exact P1 values vary by profile (ISO, eMRTD PACE, IAS). `C1` SET with an Authentication Template is the usual PACE / Chip Authentication setup.
 
-## P2 — which template
+## Which template (P2)
 
 | P2 | Template |
 |----|----------|
@@ -22,10 +20,11 @@ Exact P1 values vary by profile (ISO, eMRTD PACE, IAS). `C1` SET with an Authent
 | `B4` | Confidentiality (CT) |
 | `B6` | Digital signature (DST) |
 | `B8` | Cryptographic checksum (CCT) |
+| `BA` | Digital signature input |
 
-Command data is BER-TLV: key identifiers, algorithm references, and domain parameters.
+Command data is BER-TLV: key identifiers, algorithm references, domain parameters.
 
-## Typical status
+## Status words you will see
 
 | SW | Meaning |
 |----|---------|

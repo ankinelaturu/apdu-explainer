@@ -1,10 +1,14 @@
-## What it does
+PUT DATA stores a data object. This is how you personalize counters, cardholder data, and OpenPGP attributes — not how you write a transparent EF (that is UPDATE BINARY).
 
-PUT DATA stores a data object. Even INS `DA` names the tag in P1-P2 and puts the value in command data. Odd INS `DB` usually carries a BER-TLV object in the data field (PIV PUT DATA, UICC SET DATA).
+## Even INS `DA` — tag in P1-P2
 
-This is how you personalize counters, cardholder data, and OpenPGP attributes — not how you write a transparent EF (that is UPDATE BINARY).
+P1-P2 names the tag. Command data is the value. OpenPGP PUT DATA uses this form.
 
-## Typical status
+## Odd INS `DB` — TLV in DATA
+
+The object (tag + value) is in the data field. PIV PUT DATA and UICC SET DATA use INS `DB`.
+
+## Status words you will see
 
 | SW | Meaning |
 |----|---------|

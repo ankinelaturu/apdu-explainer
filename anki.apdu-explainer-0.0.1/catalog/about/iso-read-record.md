@@ -1,6 +1,4 @@
-## What it does
-
-READ RECORD returns one record (or a range) from a **linear or cyclic EF**. Passports use transparent files for data groups, but many UICC/EMV files are record-based (application list, log, phonebook).
+READ RECORD returns one record (or a range) from a **linear or cyclic EF**. Passports store data groups as transparent files; UICC and EMV often use records (application list, log, phonebook).
 
 ## P1 — which record
 
@@ -9,7 +7,7 @@ READ RECORD returns one record (or a range) from a **linear or cyclic EF**. Pass
 | `00` | Current / first, depending on P2 |
 | `01`–`FE` | Record number (1-based) |
 
-Record `00` is not used as a number. The first record is `01`.
+Record `00` is not a number. The first record is `01`.
 
 ## P2 — SFI and mode
 
@@ -29,16 +27,16 @@ P2 packs a short file identifier and a read mode:
 | `100` | Record P1 |
 | `101` | Record P1, read up to Le (may return several records) |
 
-## Typical status
+## Status words you will see
 
 | SW | Meaning |
 |----|---------|
 | `90 00` | Record returned |
 | `6A 83` | Record not found |
-| `6282` | End of file / last record before Le |
+| `6282` | Last record before Le |
 | `6981` | Not a record EF |
 | `6C xx` | Wrong Le; exact length is `xx` |
 
-## What to send next
+## Walking the file
 
-Walk a linear file with P2 mode “next”, or address records by number. EMV application templates in EF.AFL tell you which SFI + record numbers to read after GPO.
+Use P2 mode “next” to scan, or address records by number. After EMV GPO, the AFL tells you which SFI + record numbers to read.
