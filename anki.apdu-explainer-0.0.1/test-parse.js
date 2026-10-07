@@ -54,7 +54,8 @@ eq(p1Pills.some((p) => p.name === "EF.COM"), true, "SFI EF.COM");
 eq(readSfi.summary.includes("EF.COM"), true, "read binary summary names the file");
 
 const sw = explain(hex("90 00"), catalog);
-eq(lensTitle(sw).replace(/\s/g, ""), "SW9000", "sw lens");
+eq(lensTitle(sw), "Normal processing", "sw 9000 lens");
+eq(lensTitle(explain(hex("6A 82"), catalog)), "File not found", "sw 6A82 lens");
 
 const demo = explain(hex("80 EE 01 00 05 12 34 41 42 43"), catalog);
 eq(demo.title, "DEMO VENDOR PING", "custom overlay");

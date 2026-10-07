@@ -418,10 +418,17 @@ function explainResponse(bytes, catalog) {
   const sw2 = bytes[bytes.length - 1];
   const sw = toHexByte(sw1) + toHexByte(sw2);
   const hits = lookupStatusWords(catalog, sw);
-  const title = hits.length ? hits[0].name : "Response APDU";
+  const names = [];
+  const seen = new Set();
+  for (const h of hits) {
+    if (!h.name || seen.has(h.name)) continue;
+    seen.add(h.name);
+    names.push(h.name);
+  }
+  const title = names.length ? names[0] : `SW ${sw}`;
   return {
-    title: hits.length ? `SW ${sw}` : "Response APDU",
-    summary: hits.length ? hits.map((h) => h.name).join(" · ") : "Trailing two bytes treated as status word.",
+    title,
+    summary: names.length ? names.join(" · ") : "Trailing two bytes treated as status word.",
     specPills: hits.length ? pillsFromHits(hits) : unknownPill(sw),
     known: hits.length > 0,
     fields: [
@@ -441,10 +448,6 @@ function explainResponse(bytes, catalog) {
 
 function lensTitle(explanation) {
   if (!explanation) return "CUSTOM APDU";
-  if (explanation.role === "response") {
-    const swField = explanation.fields.find((f) => f.id === "sw");
-    return swField ? `SW ${swField.hex.replace(/\s/g, "")}` : "Response APDU";
-  }
   return explanation.title || "CUSTOM APDU";
 }
 
