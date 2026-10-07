@@ -2,40 +2,9 @@
 
 const vscode = require("vscode");
 const { parseHex } = require("./parseHex");
-const { classify, shouldAutoDetect, parseCommand } = require("./parseApdu");
+const { isDisplayableApdu } = require("./parseApdu");
 const { explain, lensTitle } = require("./explain");
-const { collectLineRuns, joinLineRuns, byteMap } = require("./joinHex");
-
-function splitIntoApdus(bytes, swIndex) {
-  if (!bytes || bytes.length < 2) return [];
-  if (parseCommand(bytes)) return [{ bytes, from: 0, to: bytes.length }];
-  const two = classify(bytes, swIndex);
-  if (bytes.length === 2 && two.kind === "response") {
-    return [{ bytes, from: 0, to: 2 }];
-  }
-  const parts = [];
-  let offset = 0;
-  while (offset < bytes.length) {
-    const rest = bytes.slice(offset);
-    let taken = 0;
-    for (let n = rest.length; n >= 2; n--) {
-      const slice = rest.slice(0, n);
-      if (parseCommand(slice)) {
-        taken = n;
-        break;
-      }
-      const parsed = classify(slice, swIndex);
-      if (n === 2 && parsed.kind === "response") {
-        taken = 2;
-        break;
-      }
-    }
-    if (!taken) break;
-    parts.push({ bytes: rest.slice(0, taken), from: offset, to: offset + taken });
-    offset += taken;
-  }
-  return parts;
-}
+const { collectLineRuns, joinLineRuns, byteMap, wrapRowsWellFormed } = require("./joinHex");
 
 const cache = new WeakMap();
 
@@ -55,23 +24,19 @@ function getSpans(document, catalog) {
   }
   const groups = joinLineRuns(collectLineRuns(lines), { lines });
   for (const group of groups) {
+    if (!wrapRowsWellFormed(group.parts)) continue;
+    if (!isDisplayableApdu(group.bytes, catalog.swIndex)) continue;
     const map = byteMap(group.parts);
-    const parts = splitIntoApdus(group.bytes, catalog.swIndex);
-    const chunks = parts.length ? parts : [{ bytes: group.bytes, from: 0, to: group.bytes.length }];
-    for (const part of chunks) {
-      const parsed = classify(part.bytes, catalog.swIndex);
-      if (!shouldAutoDetect(part.bytes, parsed)) continue;
-      const startTok = map[part.from];
-      const endTok = map[part.to - 1];
-      if (!startTok || !endTok) continue;
-      const explanation = explain(part.bytes, catalog);
-      spans.push({
-        range: new vscode.Range(startTok.line, startTok.start, endTok.line, endTok.end),
-        bytes: part.bytes,
-        explanation,
-        title: lensTitle(explanation),
-      });
-    }
+    const startTok = map[0];
+    const endTok = map[map.length - 1];
+    if (!startTok || !endTok) continue;
+    const explanation = explain(group.bytes, catalog);
+    spans.push({
+      range: new vscode.Range(startTok.line, startTok.start, endTok.line, endTok.end),
+      bytes: group.bytes,
+      explanation,
+      title: lensTitle(explanation),
+    });
   }
   cache.set(document, { version: document.version, catalog, spans });
   return spans;

@@ -192,9 +192,35 @@ function shouldAutoDetect(bytes, parsed) {
   if (!bytes || bytes.length < 2) return false;
   if (bytes.length === 2) return parsed.kind === "response";
   if (bytes.length === 3) return false;
-  if (parsed.kind === "command" || parsed.kind === "ambiguous") return true;
-  if (parsed.kind === "response" && bytes.length >= 4) return true;
+  if (parseCommand(bytes)) return true;
+  if (parsed.kind === "response" && bytes.length >= 4 && parsed.responseScore >= 4) return true;
   return false;
+}
+
+function isTruncatedCommand(bytes) {
+  if (!bytes || bytes.length < 5) return false;
+  const b4 = bytes[4];
+  if (b4 !== 0) return bytes.length > 5 && bytes.length < 5 + b4;
+  if (bytes.length === 5) return false;
+  if (bytes.length === 6) return true;
+  const lc = (bytes[5] << 8) | bytes[6];
+  if (lc === 0) return false;
+  return bytes.length < 7 + lc;
+}
+
+function isDisplayableApdu(bytes, swIndex) {
+  if (!bytes || bytes.length < 2) return false;
+  if (isTruncatedCommand(bytes)) return false;
+  if (parseCommand(bytes)) return true;
+  const parsed = classify(bytes, swIndex);
+  if (bytes.length === 2 && parsed.kind === "response") return true;
+  if (parsed.kind === "response" && bytes.length >= 4 && parsed.responseScore >= 4) return true;
+  return false;
+}
+
+function splitIntoApdus(bytes, swIndex) {
+  if (!isDisplayableApdu(bytes, swIndex)) return [];
+  return [{ bytes, from: 0, to: bytes.length }];
 }
 
 function neededCommandLengths(bytes) {
@@ -224,6 +250,9 @@ module.exports = {
   parseResponse,
   classify,
   shouldAutoDetect,
+  isDisplayableApdu,
+  isTruncatedCommand,
+  splitIntoApdus,
   isLikelyStatusWord,
   toSwHex,
   neededCommandLengths,

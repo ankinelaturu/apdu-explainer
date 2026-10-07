@@ -1,7 +1,7 @@
 "use strict";
 
 const { detectHexRuns, tokenSpans } = require("./parseHex");
-const { parseCommand, isIncompleteCommand, maxNeededCommandLength } = require("./parseApdu");
+const { parseCommand, isIncompleteCommand, maxNeededCommandLength, isDisplayableApdu } = require("./parseApdu");
 
 function kindsCompatible(a, b) {
   if (a === b) return true;
@@ -90,6 +90,28 @@ function byteMap(parts) {
   return map;
 }
 
+function wrapRowsWellFormed(parts) {
+  if (!parts || parts.length <= 1) return true;
+  const width = parts[0].bytes.length;
+  if (width < 2) return false;
+  for (let i = 1; i < parts.length - 1; i++) {
+    if (parts[i].bytes.length !== width) return false;
+  }
+  const last = parts[parts.length - 1].bytes.length;
+  return last >= 1 && last <= width;
+}
+
+function displayableGroupsFromLines(lines, swIndex) {
+  const groups = joinedRunsFromLines(lines);
+  const out = [];
+  for (const group of groups) {
+    if (!wrapRowsWellFormed(group.parts)) continue;
+    if (!isDisplayableApdu(group.bytes, swIndex)) continue;
+    out.push(group);
+  }
+  return out;
+}
+
 function joinedRunsFromLines(lines) {
   return joinLineRuns(collectLineRuns(lines), { lines });
 }
@@ -99,5 +121,7 @@ module.exports = {
   collectLineRuns,
   joinLineRuns,
   byteMap,
+  wrapRowsWellFormed,
+  displayableGroupsFromLines,
   joinedRunsFromLines,
 };
