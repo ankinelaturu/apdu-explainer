@@ -121,8 +121,8 @@ function activate(context) {
     backgroundColor: new vscode.ThemeColor("editor.wordHighlightBackground"),
     overviewRulerColor: new vscode.ThemeColor("editorOverviewRuler.infoForeground"),
     overviewRulerLane: vscode.OverviewRulerLane.Right,
-    light: { backgroundColor: "rgba(88, 132, 255, 0.16)" },
-    dark: { backgroundColor: "rgba(120, 170, 255, 0.22)" },
+    light: { backgroundColor: "rgba(88, 132, 255, 0.08)" },
+    dark: { backgroundColor: "rgba(120, 170, 255, 0.10)" },
   });
 
   onDidChangeCodeLenses = new vscode.EventEmitter();
