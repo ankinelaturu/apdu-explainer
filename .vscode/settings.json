@@ -1,7 +1,4 @@
 {
   "editor.codeLens": true,
-  "apduExplainer.codeLens.enabled": true,
-  "apduExplainer.codeLens.fontSize": 8,
-  "apduExplainer.codeLens.paddingTop": 32,
-  "editor.codeLensFontSize": 8
+  "editor.codeLensFontSize": 9
 }
